@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { credentials } from './middlewares/credentials';
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
@@ -19,7 +18,7 @@ const env = process.env.ENV || 'dev';
 const app = express();
 
 //Set up to handle options credentials check - cookies
-app.use(credentials);
+app.use(cors());
 
 // Cross Origin Resource Sharing
 app.use(cors(

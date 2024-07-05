@@ -31,7 +31,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
-const credentials_1 = require("./middlewares/credentials");
 const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const refreshRoute_1 = __importDefault(require("./routes/refreshRoute"));
@@ -42,7 +41,7 @@ const allowedOrigins = process.env.ALLOW_ORIGINS || ["http://localhost:3000"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
 //Set up to handle options credentials check - cookies
-app.use(credentials_1.credentials);
+app.use((0, cors_1.default)());
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {

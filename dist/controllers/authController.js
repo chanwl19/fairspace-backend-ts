@@ -51,7 +51,7 @@ function login(req, res, next) {
             return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
         }
         res.cookie('jwt', response.refreshToken, config_1.cookie);
-        res.status(200).json({ 'token': response.accessToken, 'roles': response.user.roles, 'userId': response.user.userId });
+        res.status(200).json({ 'token': response.accessToken, 'user': response.user });
     });
 }
 exports.login = login;

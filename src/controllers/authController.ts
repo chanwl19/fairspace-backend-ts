@@ -21,5 +21,5 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     }
 
     res.cookie('jwt', response.refreshToken, cookie);
-    res.status(200).json({ 'token' : response.accessToken, 'roles': response.user.roles, 'userId' : response.user.userId });
+    res.status(200).json({ 'token' : response.accessToken, 'user': response.user });
 }
