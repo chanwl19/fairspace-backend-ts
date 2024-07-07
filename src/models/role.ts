@@ -13,9 +13,9 @@ const roleSchema = new Schema({
     type: String
   }],
   pages: [{
-    menu: {type: String, required: true},
-    component: {type: String, required: true},
-    path: {type: String, required: true}
+    menu: String,
+    component: String,
+    path: String
   }]
 },
   {
