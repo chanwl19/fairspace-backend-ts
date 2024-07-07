@@ -43,23 +43,24 @@ const app = (0, express_1.default)();
 //Set up to handle options credentials check - cookies
 app.use((0, cors_1.default)());
 // Cross Origin Resource Sharing
-app.use((0, cors_1.default)(({
-    origin: (origin, callback) => {
-        console.log(origin);
-        if (env === 'dev') {
-            callback(null, true);
-        }
-        else {
-            if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        }
-    },
-    optionsSuccessStatus: 200
-})));
+// app.use(cors(
+//   ({
+//     origin: (origin, callback) => {
+//       console.log(origin)
+//       if (env === 'dev') {
+//         callback(null, true)
+//       } else {
+//         if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
+//           callback(null, true)
+//         } else {
+//           callback(new Error('Not allowed by CORS'));
+//         }
+//       }
+//     }
+//     ,
+//     optionsSuccessStatus: 200
+//   })
+// ));
 // built-in middleware to handle urlencoded form data
 app.use(express_1.default.urlencoded({ extended: false }));
 // built-in middleware for json 

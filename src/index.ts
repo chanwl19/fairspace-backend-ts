@@ -21,24 +21,24 @@ const app = express();
 app.use(cors());
 
 // Cross Origin Resource Sharing
-app.use(cors(
-  ({
-    origin: (origin, callback) => {
-      console.log(origin)
-      if (env === 'dev') {
-        callback(null, true)
-      } else {
-        if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
-          callback(null, true)
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
-      }
-    }
-    ,
-    optionsSuccessStatus: 200
-  })
-));
+// app.use(cors(
+//   ({
+//     origin: (origin, callback) => {
+//       console.log(origin)
+//       if (env === 'dev') {
+//         callback(null, true)
+//       } else {
+//         if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
+//           callback(null, true)
+//         } else {
+//           callback(new Error('Not allowed by CORS'));
+//         }
+//       }
+//     }
+//     ,
+//     optionsSuccessStatus: 200
+//   })
+// ));
 
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
