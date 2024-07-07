@@ -49,6 +49,7 @@ export async function login(userId: string, password: string): Promise<LoginRetu
 
     const result = await User.findByIdAndUpdate(user._id.toString(), {refreshToken : refreshToken});
     user.password = "";
+    user.refreshToken = '';
     loginReturn.errorCode = 0;
     loginReturn.errorMessage = '';
     loginReturn.refreshToken = refreshToken;

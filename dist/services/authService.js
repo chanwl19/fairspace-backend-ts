@@ -45,6 +45,7 @@ function login(userId, password) {
         const refreshToken = (0, jsonwebtoken_1.sign)({ "userId": user.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
         const result = yield user_1.User.findByIdAndUpdate(user._id.toString(), { refreshToken: refreshToken });
         user.password = "";
+        user.refreshToken = '';
         loginReturn.errorCode = 0;
         loginReturn.errorMessage = '';
         loginReturn.refreshToken = refreshToken;
