@@ -42,7 +42,6 @@ function login(req, res, next) {
         yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 1 }).run(req);
         yield (0, express_validator_1.check)("password", "Password cannot be blank").isLength({ min: 1 }).run(req);
         const errors = (0, express_validator_1.validationResult)(req);
-        console.log(errors);
         if (!errors.isEmpty()) {
             return next(new apiError_1.ApiError('Validation failed.', 422, errors.array()));
         }

@@ -9,7 +9,6 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     await check("password", "Password cannot be blank").isLength({min: 1}).run(req);
 
     const errors = validationResult(req);
-    console.log(errors);
     if (!errors.isEmpty()) {
         return next(new ApiError('Validation failed.', 422, errors.array()));
     }
