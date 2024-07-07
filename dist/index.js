@@ -37,7 +37,7 @@ const refreshRoute_1 = __importDefault(require("./routes/refreshRoute"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const authMiddleware = __importStar(require("./middlewares/authorize"));
 dotenv_1.default.config();
-const allowedOrigins = process.env.ALLOW_ORIGINS || ["http://localhost:3000"];
+const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
 //Set up to handle options credentials check - cookies
@@ -52,6 +52,7 @@ app.use((0, cors_1.default)(({
             callback(new Error('Not allowed by CORS'));
         }
     },
+    credentials: true,
     optionsSuccessStatus: 200
 })));
 // built-in middleware to handle urlencoded form data

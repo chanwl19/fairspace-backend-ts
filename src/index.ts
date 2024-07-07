@@ -12,7 +12,7 @@ import * as authMiddleware from './middlewares/authorize';
 
 dotenv.config();
 
-const allowedOrigins = process.env.ALLOW_ORIGINS || ["http://localhost:3000"];
+const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
 
 const app = express();
@@ -30,7 +30,7 @@ app.use(cors(
         callback(new Error('Not allowed by CORS'));
       }
     }
-    ,
+    , credentials: true,
     optionsSuccessStatus: 200
   })
 ));
