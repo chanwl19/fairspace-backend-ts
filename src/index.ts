@@ -18,7 +18,7 @@ const env = process.env.ENV || 'dev';
 const app = express();
 
 //Set up to handle options credentials check - cookies
-//app.use(cors());
+app.use(cors());
 
 // Cross Origin Resource Sharing
 app.use(cors(

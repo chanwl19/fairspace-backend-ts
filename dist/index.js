@@ -41,7 +41,7 @@ const allowedOrigins = process.env.ALLOW_ORIGINS || ["http://localhost:3000"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
 //Set up to handle options credentials check - cookies
-//app.use(cors());
+app.use((0, cors_1.default)());
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {
