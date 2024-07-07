@@ -41,21 +41,15 @@ const allowedOrigins = process.env.ALLOW_ORIGINS || ["http://localhost:3000"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
 //Set up to handle options credentials check - cookies
-app.use((0, cors_1.default)());
+//app.use(cors());
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {
-        console.log(origin);
-        if (env === 'dev') {
+        if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
             callback(null, true);
         }
         else {
-            if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
+            callback(new Error('Not allowed by CORS'));
         }
     },
     optionsSuccessStatus: 200

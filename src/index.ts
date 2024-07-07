@@ -18,21 +18,16 @@ const env = process.env.ENV || 'dev';
 const app = express();
 
 //Set up to handle options credentials check - cookies
-app.use(cors());
+//app.use(cors());
 
 // Cross Origin Resource Sharing
 app.use(cors(
   ({
     origin: (origin, callback) => {
-      console.log(origin)
-      if (env === 'dev') {
+      if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
         callback(null, true)
       } else {
-        if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
-          callback(null, true)
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
+        callback(new Error('Not allowed by CORS'));
       }
     }
     ,
