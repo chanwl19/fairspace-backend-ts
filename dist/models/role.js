@@ -13,6 +13,11 @@ const roleSchema = new mongoose_1.Schema({
     },
     endPoints: [{
             type: String
+        }],
+    pages: [{
+            menu: { type: String, required: true },
+            component: { type: String, required: true },
+            path: { type: String, required: true }
         }]
 }, {
     timestamps: true,

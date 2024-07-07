@@ -17,6 +17,18 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  firstName: {
+    type: String
+  },
+  lastName: {
+    type: String
+  },
+  middleName: {
+    type: String
+  },
+  phoneNo: {
+    type: String
+  },
   refreshToken: {
     type: String
   },
