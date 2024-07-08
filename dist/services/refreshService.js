@@ -29,24 +29,28 @@ function refreshToken(token) {
         const foundUser = yield user_1.User.findOne({ refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDEzMjU1MDkiLCJpYXQiOjE3MjA0NDYzNTYsImV4cCI6MTcyMDQ0OTk1Nn0.MoOOE287rgdYB78F134fyKKfDPJhuwEsMUCWVKa__rI' });
         // Detected refresh token reuse!
         if (!foundUser) {
-            yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
-                if (err) {
-                    tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
-                    return tokenReturn;
-                }
-                // const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
-                // if (hackedUser){
-                //     hackedUser.refreshToken = "";
-                //     const result = await hackedUser.save();
-                // };
-            }));
+            // verify(
+            //     token,
+            //     process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
+            //     async (err, decoded) => {
+            //         if (err) {
+            //             tokenReturn.errorCode = 403;
+            //             tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
+            //             return tokenReturn;
+            //         }
+            //         // const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
+            //         // if (hackedUser){
+            //         //     hackedUser.refreshToken = "";
+            //         //     const result = await hackedUser.save();
+            //         // };
+            //     }
+            // )
             tokenReturn.errorCode = 403;
             tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
         }
         // evaluate jwt 
-        yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+        (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
             if (err) {
                 if (foundUser) {
                     foundUser.refreshToken = "";
