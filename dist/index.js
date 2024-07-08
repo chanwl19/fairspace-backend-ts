@@ -45,11 +45,16 @@ const app = (0, express_1.default)();
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {
-        if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
+        if (env === 'dev') {
             callback(null, true);
         }
         else {
-            callback(new Error('Not allowed by CORS'));
+            if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error('Not allowed by CORS'));
+            }
         }
     },
     credentials: true,
