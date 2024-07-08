@@ -25,12 +25,24 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 
 export async function logout(req: Request, res: Response, next: NextFunction): Promise<void> {
 
-    const response = await authService.logout(req.body._id);
+    const cookies = req.cookies;
+    if (!cookies) {
+        res.status(204);
+        return;
+    }
+
+    const refreshToken = cookies.jwt;
+    if (!refreshToken) {
+        res.status(204);
+        return;
+    }
+
+    const response = await authService.logout(refreshToken);
 
     if (response !== 0) {
-        return next(new ApiError("Error Occurs", 500, []));
+        res.status(204);
     }
 
     res.clearCookie('jwt', cookie);
-    res.status(200).json({ 'token' : 'Logout successfully' });
+    res.status(204).json({ 'token' : 'Logout successfully' });
 }

@@ -56,12 +56,22 @@ function login(req, res, next) {
 exports.login = login;
 function logout(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield authService.logout(req.body._id);
+        const cookies = req.cookies;
+        if (!cookies) {
+            res.status(204);
+            return;
+        }
+        const refreshToken = cookies.jwt;
+        if (!refreshToken) {
+            res.status(204);
+            return;
+        }
+        const response = yield authService.logout(refreshToken);
         if (response !== 0) {
-            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+            res.status(204);
         }
         res.clearCookie('jwt', config_1.cookie);
-        res.status(200).json({ 'token': 'Logout successfully' });
+        res.status(204).json({ 'token': 'Logout successfully' });
     });
 }
 exports.logout = logout;
