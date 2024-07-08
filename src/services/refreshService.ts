@@ -34,7 +34,7 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
             async (err, decoded) => {
                 if (err) {
                     tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden';
+                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
                     return tokenReturn;
                 }
                 const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
@@ -45,7 +45,7 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
             }
         )
         tokenReturn.errorCode = 403;
-        tokenReturn.errorMessage = 'Forbidden';
+        tokenReturn.errorMessage = 'Forbidden No user found';
         return tokenReturn;
     }
     // evaluate jwt 
@@ -61,7 +61,7 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
             }
             if (err || (foundUser && (foundUser.userId !== (decoded as TokenInterface).userId))) {
                 tokenReturn.errorCode = 403;
-                tokenReturn.errorMessage = 'Forbidden';
+                tokenReturn.errorMessage = 'Forbidden user id not match';
                 return tokenReturn;
             }
 

@@ -31,7 +31,7 @@ function refreshToken(refreshToken) {
             yield (0, jsonwebtoken_1.verify)(refreshToken, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
                 if (err) {
                     tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden';
+                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
                     return tokenReturn;
                 }
                 const hackedUser = yield user_1.User.findOne({ userId: decoded.userId });
@@ -42,7 +42,7 @@ function refreshToken(refreshToken) {
                 ;
             }));
             tokenReturn.errorCode = 403;
-            tokenReturn.errorMessage = 'Forbidden';
+            tokenReturn.errorMessage = 'Forbidden No user found';
             return tokenReturn;
         }
         // evaluate jwt 
@@ -55,7 +55,7 @@ function refreshToken(refreshToken) {
             }
             if (err || (foundUser && (foundUser.userId !== decoded.userId))) {
                 tokenReturn.errorCode = 403;
-                tokenReturn.errorMessage = 'Forbidden';
+                tokenReturn.errorMessage = 'Forbidden user id not match';
                 return tokenReturn;
             }
             //sign a new access token
