@@ -17,7 +17,7 @@ interface TokenInterface {
     exp: number;
 }
 
-export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
+export async function refreshToken(token: string): Promise<TokenReturn> {
     const tokenReturn: TokenReturn = {
         newRefreshToken: '',
         accessToken: '',
@@ -25,12 +25,11 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
         errorMessage: 'Error Occurs'
     };
 
-    //const foundUser = await User.findOne({ refreshToken:  refreshToken});
-    const foundUser = await User.findOne({userId : '301325509'});
+    const foundUser = await User.findOne({ refreshToken:  token});
     // Detected refresh token reuse!
     if (!foundUser) {
         await verify(
-            refreshToken,
+            token,
             process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
             async (err, decoded) => {
                 if (err) {
@@ -51,7 +50,7 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
     }
     // evaluate jwt 
     await verify(
-        refreshToken,
+        token,
         process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
         async (err, decoded) => {
             if (err) {

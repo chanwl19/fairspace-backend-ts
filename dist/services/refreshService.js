@@ -17,7 +17,7 @@ const user_1 = require("../models/user");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-function refreshToken(refreshToken) {
+function refreshToken(token) {
     return __awaiter(this, void 0, void 0, function* () {
         const tokenReturn = {
             newRefreshToken: '',
@@ -25,11 +25,10 @@ function refreshToken(refreshToken) {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
-        //const foundUser = await User.findOne({ refreshToken:  refreshToken});
-        const foundUser = yield user_1.User.findOne({ userId: '301325509' });
+        const foundUser = yield user_1.User.findOne({ refreshToken: token });
         // Detected refresh token reuse!
         if (!foundUser) {
-            yield (0, jsonwebtoken_1.verify)(refreshToken, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+            yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
                 if (err) {
                     tokenReturn.errorCode = 403;
                     tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
@@ -47,7 +46,7 @@ function refreshToken(refreshToken) {
             return tokenReturn;
         }
         // evaluate jwt 
-        yield (0, jsonwebtoken_1.verify)(refreshToken, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+        yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
             if (err) {
                 if (foundUser) {
                     foundUser.refreshToken = "";
