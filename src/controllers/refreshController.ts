@@ -11,7 +11,7 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     const refreshToken = cookies.jwt;
     res.clearCookie('jwt', cookie);
 
-    const response = await refreshService.refreshToken(refreshToken);
+    const response = await refreshService.refreshToken(refreshToken.toString());
     if (response.errorCode !== 0) {
         return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
     }
