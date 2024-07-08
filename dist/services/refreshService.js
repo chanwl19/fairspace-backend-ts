@@ -42,7 +42,7 @@ function refreshToken(refreshToken) {
                 ;
             }));
             tokenReturn.errorCode = 403;
-            tokenReturn.errorMessage = 'Forbidden No user found';
+            tokenReturn.errorMessage = 'Forbidden No user found ' + refreshToken;
             return tokenReturn;
         }
         // evaluate jwt 

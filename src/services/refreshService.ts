@@ -45,7 +45,7 @@ export async function refreshToken(refreshToken: string): Promise<TokenReturn> {
             }
         )
         tokenReturn.errorCode = 403;
-        tokenReturn.errorMessage = 'Forbidden No user found';
+        tokenReturn.errorMessage = 'Forbidden No user found ' + refreshToken;
         return tokenReturn;
     }
     // evaluate jwt 
