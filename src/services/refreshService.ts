@@ -45,6 +45,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         //         // };
         //     }
         // )
+        console.log('I am here no user found');
         tokenReturn.errorCode = 403;
         tokenReturn.errorMessage = 'Forbidden No user found ' + token;
         return tokenReturn;
@@ -65,7 +66,8 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 tokenReturn.errorMessage = 'Forbidden user id not match';
                 return tokenReturn;
             }
-
+            
+            console.log('I am signing new token');
             //sign a new access token
             const accessToken = sign(
                 { "userId": foundUser.userId, "roles": foundUser.roles },
@@ -73,6 +75,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 { expiresIn: '10s' }
             );
             
+            console.log('I am signing new refresh token');
             //Generate new refresh token
             const newRefreshToken = sign(
                 { "userId": foundUser.userId },
@@ -80,6 +83,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 { expiresIn: '1h' }
             );
 
+            console.log('refresh token ' + newRefreshToken);
             // Saving refreshToken with current user
             foundUser.refreshToken = newRefreshToken;
             const result = await foundUser.save();
@@ -89,6 +93,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             tokenReturn.errorMessage = '';
             tokenReturn.accessToken = accessToken;
             tokenReturn.newRefreshToken = newRefreshToken;
+            console.log("Return ")
             return tokenReturn;
         }
     );

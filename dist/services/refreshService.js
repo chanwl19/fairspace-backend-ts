@@ -45,6 +45,7 @@ function refreshToken(token) {
             //         // };
             //     }
             // )
+            console.log('I am here no user found');
             tokenReturn.errorCode = 403;
             tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
@@ -62,10 +63,13 @@ function refreshToken(token) {
                 tokenReturn.errorMessage = 'Forbidden user id not match';
                 return tokenReturn;
             }
+            console.log('I am signing new token');
             //sign a new access token
             const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
+            console.log('I am signing new refresh token');
             //Generate new refresh token
             const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1h' });
+            console.log('refresh token ' + newRefreshToken);
             // Saving refreshToken with current user
             foundUser.refreshToken = newRefreshToken;
             const result = yield foundUser.save();
@@ -74,6 +78,7 @@ function refreshToken(token) {
             tokenReturn.errorMessage = '';
             tokenReturn.accessToken = accessToken;
             tokenReturn.newRefreshToken = newRefreshToken;
+            console.log("Return ");
             return tokenReturn;
         }));
         return tokenReturn;
