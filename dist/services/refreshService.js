@@ -26,7 +26,7 @@ function refreshToken(token) {
             errorMessage: 'Error Occurs'
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token });
-        console.log(foundUser);
+        console.log('here is the found user ' + JSON.stringify(foundUser));
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
