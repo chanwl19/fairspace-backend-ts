@@ -26,7 +26,7 @@ function refreshToken(token) {
             errorMessage: 'Error Occurs'
         };
         //const foundUser = await User.findOne({ refreshToken: token});
-        const foundUser = yield user_1.User.findOne({ refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDEzMjU1MDkiLCJpYXQiOjE3MjA0NDYzNTYsImV4cCI6MTcyMDQ0OTk1Nn0.MoOOE287rgdYB78F134fyKKfDPJhuwEsMUCWVKa__rI' });
+        const foundUser = yield user_1.User.findOne({ userId: '301325509' });
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
