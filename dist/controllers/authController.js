@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = void 0;
+exports.logout = exports.login = void 0;
 const express_validator_1 = require("express-validator");
 const apiError_1 = require("../models/apiError");
 const authService = __importStar(require("../services/authService"));
@@ -54,3 +54,14 @@ function login(req, res, next) {
     });
 }
 exports.login = login;
+function logout(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield authService.logout(req.body._id);
+        if (response !== 0) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+        }
+        res.clearCookie('jwt');
+        res.status(200).json({ 'token': 'Logout successfully' });
+    });
+}
+exports.logout = logout;

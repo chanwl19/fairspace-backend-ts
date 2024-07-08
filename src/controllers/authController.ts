@@ -22,3 +22,15 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     res.cookie('jwt', response.refreshToken, cookie);
     res.status(200).json({ 'token' : response.accessToken, 'user': response.user });
 }
+
+export async function logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+
+    const response = await authService.logout(req.body._id);
+
+    if (response !== 0) {
+        return next(new ApiError("Error Occurs", 500, []));
+    }
+
+    res.clearCookie('jwt');
+    res.status(200).json({ 'token' : 'Logout successfully' });
+}

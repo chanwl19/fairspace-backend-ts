@@ -58,4 +58,7 @@ export async function login(userId: string, password: string): Promise<LoginRetu
     return loginReturn;
 }
 
-
+export async function logout(_id: string): Promise<number> {
+    const result = await User.findByIdAndUpdate(_id, {refreshToken : ''});
+    return 0;
+}

@@ -27,6 +27,8 @@ const express_1 = require("express");
 const authController = __importStar(require("../controllers/authController"));
 const authRoute = (0, express_1.Router)();
 //post request will be handled by authController.handleLogin
-authRoute.route('/').
+authRoute.route('/login').
     post(authController.login);
+authRoute.route('/logout').
+    post(authController.logout);
 exports.default = authRoute;

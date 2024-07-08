@@ -48,7 +48,7 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, '/public')));
 
 //Route login to authRoute
-app.use('/login', authRoute);
+app.use('/auth', authRoute);
 //Route refresh to refreshRoute
 app.use('/refresh', refreshRoute);
 //Route user to userRoute

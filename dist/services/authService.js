@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = void 0;
+exports.logout = exports.login = void 0;
 const user_1 = require("../models/user");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const bcryptjs_1 = require("bcryptjs");
@@ -55,3 +55,10 @@ function login(userId, password) {
     });
 }
 exports.login = login;
+function logout(_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield user_1.User.findByIdAndUpdate(_id, { refreshToken: '' });
+        return 0;
+    });
+}
+exports.logout = logout;

@@ -64,7 +64,7 @@ app.use((0, cookie_parser_1.default)());
 //serve static files
 app.use('/', express_1.default.static(path_1.default.join(__dirname, '/public')));
 //Route login to authRoute
-app.use('/login', authRoute_1.default);
+app.use('/auth', authRoute_1.default);
 //Route refresh to refreshRoute
 app.use('/refresh', refreshRoute_1.default);
 //Route user to userRoute
