@@ -34,15 +34,14 @@ function refreshToken(token) {
                     tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
                     return tokenReturn;
                 }
-                const hackedUser = yield user_1.User.findOne({ userId: decoded.userId });
-                if (hackedUser) {
-                    hackedUser.refreshToken = "";
-                    const result = yield hackedUser.save();
-                }
-                ;
+                // const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
+                // if (hackedUser){
+                //     hackedUser.refreshToken = "";
+                //     const result = await hackedUser.save();
+                // };
             }));
             tokenReturn.errorCode = 403;
-            tokenReturn.errorMessage = 'Forbidden No user found ' + refreshToken;
+            tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
         }
         // evaluate jwt 
