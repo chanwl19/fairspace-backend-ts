@@ -26,7 +26,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     //const foundUser = await User.findOne({ refreshToken: token});
-    const foundUser = await User.findOne({ "refreshToken": token});
+    const foundUser = await User.findOne({ refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDEzMjU1MDkiLCJpYXQiOjE3MjA0NDYyMTksImV4cCI6MTcyMDQ0OTgxOX0.2J4h70yOISW4HtuABQm1VeRI97hImRFhjJMtSmM7Vn4'});
     // Detected refresh token reuse!
     if (!foundUser) {
         await verify(

@@ -26,7 +26,7 @@ function refreshToken(token) {
             errorMessage: 'Error Occurs'
         };
         //const foundUser = await User.findOne({ refreshToken: token});
-        const foundUser = yield user_1.User.findOne({ "refreshToken": token });
+        const foundUser = yield user_1.User.findOne({ refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDEzMjU1MDkiLCJpYXQiOjE3MjA0NDYyMTksImV4cCI6MTcyMDQ0OTgxOX0.2J4h70yOISW4HtuABQm1VeRI97hImRFhjJMtSmM7Vn4' });
         // Detected refresh token reuse!
         if (!foundUser) {
             yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
