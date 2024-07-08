@@ -25,8 +25,8 @@ function refreshToken(token) {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
-        //const foundUser = await User.findOne({ refreshToken: token});
-        const foundUser = yield user_1.User.findOne({ userId: '301325509' });
+        const foundUser = yield user_1.User.findOne({ refreshToken: token });
+        console.log(foundUser);
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
