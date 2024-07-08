@@ -31,6 +31,6 @@ export async function logout(req: Request, res: Response, next: NextFunction): P
         return next(new ApiError("Error Occurs", 500, []));
     }
 
-    res.clearCookie('jwt');
+    res.clearCookie('jwt', cookie);
     res.status(200).json({ 'token' : 'Logout successfully' });
 }

@@ -60,7 +60,7 @@ function logout(req, res, next) {
         if (response !== 0) {
             return next(new apiError_1.ApiError("Error Occurs", 500, []));
         }
-        res.clearCookie('jwt');
+        res.clearCookie('jwt', config_1.cookie);
         res.status(200).json({ 'token': 'Logout successfully' });
     });
 }
