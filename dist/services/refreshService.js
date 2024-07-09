@@ -27,14 +27,14 @@ function refreshToken(token) {
             user: new user_1.User()
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
-        console.log('foudn user ', foundUser, ' token ', token);
         // Detected refresh token reuse!
         if (!foundUser) {
-            (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
-                if (err) {
-                    tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
-                    return tokenReturn;
+            try {
+                tokenReturn.errorCode = 403;
+                tokenReturn.errorMessage = 'Forbidden Error';
+                const decoded = yield (0, jsonwebtoken_1.verify)(token, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY');
+                if (!decoded) {
+                    throw new Error();
                 }
                 const hackedUser = yield user_1.User.findOne({ userId: decoded.userId });
                 if (hackedUser) {
@@ -42,15 +42,37 @@ function refreshToken(token) {
                     const result = yield hackedUser.save();
                 }
                 ;
-            }));
-            tokenReturn.errorCode = 403;
-            tokenReturn.errorMessage = 'Forbidden No user found ' + token;
-            return tokenReturn;
+                return tokenReturn;
+            }
+            catch (_a) {
+                return tokenReturn;
+            }
+            // verify(
+            //     token,
+            //     process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
+            //     async (err, decoded) => {
+            //         if (err) {
+            //             tokenReturn.errorCode = 403;
+            //             tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
+            //             return tokenReturn;
+            //         }
+            //         const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId });
+            //         if (hackedUser) {
+            //             hackedUser.refreshToken = "";
+            //             const result = await hackedUser.save();
+            //         };
+            //     }
+            // )
+            // tokenReturn.errorCode = 403;
+            // tokenReturn.errorMessage = 'Forbidden No user found ' + token;
+            // return tokenReturn;
         }
-        console.log('before verify jwt');
         // evaluate jwt 
         try {
             const decoded = yield (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY');
+            if (!decoded) {
+                throw new Error();
+            }
             if (foundUser && (foundUser.userId !== decoded.userId)) {
                 throw new Error();
             }
@@ -66,7 +88,7 @@ function refreshToken(token) {
             tokenReturn.user = foundUser;
             return tokenReturn;
         }
-        catch (_a) {
+        catch (_b) {
             if (foundUser) {
                 foundUser.refreshToken = "";
                 yield foundUser.save();

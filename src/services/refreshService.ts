@@ -28,34 +28,54 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     const foundUser = await User.findOne({ refreshToken: token }).populate('roles');
-    console.log('foudn user ', foundUser, ' token ', token)
     // Detected refresh token reuse!
     if (!foundUser) {
-        verify(
-            token,
-            process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
-            async (err, decoded) => {
-                if (err) {
-                    tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
-                    return tokenReturn;
-                }
-                const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId });
-                if (hackedUser) {
-                    hackedUser.refreshToken = "";
-                    const result = await hackedUser.save();
-                };
+        try {
+            tokenReturn.errorCode = 403;
+            tokenReturn.errorMessage = 'Forbidden Error';
+            const decoded = await verify(token,
+                process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY');
+            if (!decoded) {
+                throw new Error();
             }
-        )
-        tokenReturn.errorCode = 403;
-        tokenReturn.errorMessage = 'Forbidden No user found ' + token;
-        return tokenReturn;
+            const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId });
+            if (hackedUser) {
+                hackedUser.refreshToken = "";
+                const result = await hackedUser.save();
+            };
+            return tokenReturn;
+        } catch {
+            return tokenReturn;
+        }
+       
+        // verify(
+        //     token,
+        //     process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
+        //     async (err, decoded) => {
+        //         if (err) {
+        //             tokenReturn.errorCode = 403;
+        //             tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
+        //             return tokenReturn;
+        //         }
+        //         const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId });
+        //         if (hackedUser) {
+        //             hackedUser.refreshToken = "";
+        //             const result = await hackedUser.save();
+        //         };
+        //     }
+        // )
+        // tokenReturn.errorCode = 403;
+        // tokenReturn.errorMessage = 'Forbidden No user found ' + token;
+        // return tokenReturn;
     }
-    console.log('before verify jwt');
     // evaluate jwt 
     try {
         const decoded = await verify(token,
             process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY');
+
+        if (!decoded) {
+            throw new Error();
+        }
         if (foundUser && (foundUser.userId !== (decoded as TokenInterface).userId)) {
             throw new Error();
         };
