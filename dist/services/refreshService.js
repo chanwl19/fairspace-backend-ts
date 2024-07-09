@@ -27,6 +27,7 @@ function refreshToken(token) {
             user: new user_1.User()
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
+        console.log('foudn user ', foundUser, ' token ', token);
         // Detected refresh token reuse!
         if (!foundUser) {
             (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
@@ -65,6 +66,9 @@ function refreshToken(token) {
             const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
             //Generate new refresh token
             const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
+            // Saving refreshToken with current user
+            foundUser.refreshToken = newRefreshToken;
+            const saveUser = yield foundUser.save();
             console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
@@ -73,9 +77,6 @@ function refreshToken(token) {
             tokenReturn.newRefreshToken = newRefreshToken;
             tokenReturn.user = foundUser;
             console.log("Return ", JSON.stringify(tokenReturn));
-            // Saving refreshToken with current user
-            foundUser.refreshToken = newRefreshToken;
-            const saveUser = yield foundUser.save();
         }));
         console.log('here rto return default ');
         return tokenReturn;

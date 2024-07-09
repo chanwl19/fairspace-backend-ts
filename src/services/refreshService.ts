@@ -28,6 +28,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     const foundUser = await User.findOne({ refreshToken: token }).populate('roles');
+    console.log('foudn user ' , foundUser , ' token ', token)
     // Detected refresh token reuse!
     if (!foundUser) {
         verify(
@@ -83,6 +84,10 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 { expiresIn: '1d' }
             );
 
+            // Saving refreshToken with current user
+            foundUser.refreshToken = newRefreshToken;
+            const saveUser = await foundUser.save();
+
             console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
@@ -91,10 +96,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             tokenReturn.newRefreshToken = newRefreshToken;
             tokenReturn.user = foundUser;
             console.log("Return ", JSON.stringify(tokenReturn))
-            
-             // Saving refreshToken with current user
-             foundUser.refreshToken = newRefreshToken;
-             const saveUser = await foundUser.save();
+
         }
     );
 
