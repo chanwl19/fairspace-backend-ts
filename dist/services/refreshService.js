@@ -23,9 +23,10 @@ function refreshToken(token) {
             newRefreshToken: '',
             accessToken: '',
             errorCode: 500,
-            errorMessage: 'Error Occurs'
+            errorMessage: 'Error Occurs',
+            user: new user_1.User()
         };
-        const foundUser = yield user_1.User.findOne({ refreshToken: token });
+        const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
@@ -51,40 +52,39 @@ function refreshToken(token) {
         }
         console.log('before verify jwt');
         // evaluate jwt 
-        (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
-            console.log('decoded ', JSON.stringify(decoded));
-            console.log('err ', JSON.stringify(err));
-            if (err) {
-                if (foundUser) {
-                    foundUser.refreshToken = "";
-                    const result = yield foundUser.save();
+        const verifyJwt = () => __awaiter(this, void 0, void 0, function* () {
+            (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+                if (err) {
+                    if (foundUser) {
+                        foundUser.refreshToken = "";
+                        yield foundUser.save();
+                    }
                 }
-            }
-            if (err || (foundUser && (foundUser.userId !== decoded.userId))) {
-                tokenReturn.errorCode = 403;
-                tokenReturn.errorMessage = 'Forbidden user id not match';
+                if (err || (foundUser && (foundUser.userId !== decoded.userId))) {
+                    tokenReturn.errorCode = 403;
+                    tokenReturn.errorMessage = 'Forbidden user id not match';
+                    return tokenReturn;
+                }
+                console.log('I am signing new token');
+                //sign a new access token
+                const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
+                //Generate new refresh token
+                const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
+                // Saving refreshToken with current user
+                foundUser.refreshToken = newRefreshToken;
+                yield foundUser.save();
+                console.log('Save refresh token successfully');
+                // return new refresh token and access token to controller
+                tokenReturn.errorCode = 0;
+                tokenReturn.errorMessage = '';
+                tokenReturn.accessToken = accessToken;
+                tokenReturn.newRefreshToken = newRefreshToken;
+                tokenReturn.user = foundUser;
+                console.log("Return ", JSON.stringify(tokenReturn));
                 return tokenReturn;
-            }
-            console.log('I am signing new token');
-            //sign a new access token
-            const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
-            console.log('I am signing new refresh token');
-            //Generate new refresh token
-            const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1h' });
-            console.log('refresh token ' + newRefreshToken);
-            // Saving refreshToken with current user
-            foundUser.refreshToken = newRefreshToken;
-            //const result = await foundUser.save();
-            //console.log('result ', result);
-            console.log('Save refresh token successfully');
-            // return new refresh token and access token to controller
-            tokenReturn.errorCode = 0;
-            tokenReturn.errorMessage = '';
-            tokenReturn.accessToken = accessToken;
-            tokenReturn.newRefreshToken = newRefreshToken;
-            console.log("Return ", JSON.stringify(tokenReturn));
-            return tokenReturn;
-        }));
+            }));
+        });
+        verifyJwt();
         console.log('here rto return default ');
         return tokenReturn;
     });

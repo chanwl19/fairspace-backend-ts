@@ -12,13 +12,11 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     res.clearCookie('jwt', cookie);
 
     const response = await refreshService.refreshToken(refreshToken.toString());
-    console.log("In controoler response is " , JSON.stringify(response));
     if (response.errorCode !== 0) {
-        console.log('esponse.errorCode ' , response.errorCode)
         return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
     }
 
     // Set refresh cookie
     res.cookie('jwt', response.newRefreshToken, cookie);
-    res.status(201).json({ 'message': 'refresh token generated', 'token' : response.accessToken});
+    res.status(201).json({ 'message': 'refresh token generated', 'token' : response.accessToken, 'user': response.user});
 }
