@@ -83,10 +83,6 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 { expiresIn: '1d' }
             );
 
-            // Saving refreshToken with current user
-            foundUser.refreshToken = newRefreshToken;
-            const saveUser = await foundUser.save().exec();
-
             console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
@@ -95,7 +91,10 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             tokenReturn.newRefreshToken = newRefreshToken;
             tokenReturn.user = foundUser;
             console.log("Return ", JSON.stringify(tokenReturn))
-            //return tokenReturn;
+            
+             // Saving refreshToken with current user
+             foundUser.refreshToken = newRefreshToken;
+             const saveUser = await foundUser.save();
         }
     );
 
