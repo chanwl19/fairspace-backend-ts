@@ -101,7 +101,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             }
         )
     };
-    verifyJwt();
+    await verifyJwt();
     console.log('here rto return default ');
     return tokenReturn;
 }

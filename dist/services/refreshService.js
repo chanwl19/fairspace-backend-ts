@@ -84,7 +84,7 @@ function refreshToken(token) {
                 return tokenReturn;
             }));
         });
-        verifyJwt();
+        yield verifyJwt();
         console.log('here rto return default ');
         return tokenReturn;
     });
