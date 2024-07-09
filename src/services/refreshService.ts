@@ -89,7 +89,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             // Saving refreshToken with current user
             foundUser.refreshToken = newRefreshToken;
             //const result = await foundUser.save();
-            console.log('result ', result);
+            //console.log('result ', result);
 
             console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
