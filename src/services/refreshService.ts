@@ -26,7 +26,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     const foundUser = await User.findOne({ refreshToken: token});
-    console.log('here is the found user ' + JSON.stringify(foundUser));
+    console.log('here is the found user ');
     // Detected refresh token reuse!
     if (!foundUser) {
         // verify(
@@ -50,6 +50,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         tokenReturn.errorMessage = 'Forbidden No user found ' + token;
         return tokenReturn;
     }
+    console.log('before verify jwt')
     // evaluate jwt 
     verify(
         token,

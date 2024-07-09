@@ -26,7 +26,7 @@ function refreshToken(token) {
             errorMessage: 'Error Occurs'
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token });
-        console.log('here is the found user ' + JSON.stringify(foundUser));
+        console.log('here is the found user ');
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
@@ -50,6 +50,7 @@ function refreshToken(token) {
             tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
         }
+        console.log('before verify jwt');
         // evaluate jwt 
         (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
             console.log('decoded ', JSON.stringify(decoded));
