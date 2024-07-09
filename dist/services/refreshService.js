@@ -52,6 +52,8 @@ function refreshToken(token) {
         }
         // evaluate jwt 
         (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+            console.log('decoded ', JSON.stringify(decoded));
+            console.log('err ', JSON.stringify(err));
             if (err) {
                 if (foundUser) {
                     foundUser.refreshToken = "";

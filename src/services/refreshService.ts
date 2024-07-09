@@ -55,6 +55,8 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         token,
         process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
         async (err, decoded) => {
+            console.log('decoded ' , JSON.stringify(decoded));
+            console.log('err ' , JSON.stringify(err));
             if (err) {
                 if (foundUser){
                     foundUser.refreshToken = "";
