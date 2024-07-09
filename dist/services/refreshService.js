@@ -46,40 +46,37 @@ function refreshToken(token) {
             tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
         }
-        else {
-            console.log('before verify jwt');
-            // evaluate jwt 
-            (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
-                if (err) {
-                    if (foundUser) {
-                        foundUser.refreshToken = "";
-                        yield foundUser.save();
-                    }
+        console.log('before verify jwt');
+        // evaluate jwt 
+        (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+            if (err) {
+                if (foundUser) {
+                    foundUser.refreshToken = "";
+                    yield foundUser.save();
                 }
-                if (err || (foundUser && (foundUser.userId !== decoded.userId))) {
-                    tokenReturn.errorCode = 403;
-                    tokenReturn.errorMessage = 'Forbidden user id not match';
-                    return tokenReturn;
-                }
-                console.log('I am signing new token');
-                //sign a new access token
-                const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
-                //Generate new refresh token
-                const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
-                // Saving refreshToken with current user
-                foundUser.refreshToken = newRefreshToken;
-                const saveUser = yield foundUser.save();
-                console.log('Save refresh token successfully');
-                // return new refresh token and access token to controller
-                tokenReturn.errorCode = 0;
-                tokenReturn.errorMessage = '';
-                tokenReturn.accessToken = accessToken;
-                tokenReturn.newRefreshToken = newRefreshToken;
-                tokenReturn.user = foundUser;
-                console.log("Return ", JSON.stringify(tokenReturn));
-                //return tokenReturn;
-            }));
-        }
+            }
+            if (err || (foundUser && (foundUser.userId !== decoded.userId))) {
+                tokenReturn.errorCode = 403;
+                tokenReturn.errorMessage = 'Forbidden user id not match';
+                return tokenReturn;
+            }
+            console.log('I am signing new token');
+            //sign a new access token
+            const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
+            //Generate new refresh token
+            const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
+            console.log('Save refresh token successfully');
+            // return new refresh token and access token to controller
+            tokenReturn.errorCode = 0;
+            tokenReturn.errorMessage = '';
+            tokenReturn.accessToken = accessToken;
+            tokenReturn.newRefreshToken = newRefreshToken;
+            tokenReturn.user = foundUser;
+            console.log("Return ", JSON.stringify(tokenReturn));
+            // Saving refreshToken with current user
+            foundUser.refreshToken = newRefreshToken;
+            const saveUser = yield foundUser.save();
+        }));
         console.log('here rto return default ');
         return tokenReturn;
     });
