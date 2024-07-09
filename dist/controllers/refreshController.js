@@ -46,7 +46,9 @@ function refreshToken(req, res, next) {
         const refreshToken = cookies.jwt;
         res.clearCookie('jwt', config_1.cookie);
         const response = yield refreshService.refreshToken(refreshToken.toString());
+        console.log("In controoler response is ", JSON.stringify(response));
         if (response.errorCode !== 0) {
+            console.log('esponse.errorCode ', response.errorCode);
             return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
         }
         // Set refresh cookie

@@ -26,7 +26,6 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     const foundUser = await User.findOne({ refreshToken: token});
-    console.log('here is the found user ');
     // Detected refresh token reuse!
     if (!foundUser) {
         // verify(
@@ -91,12 +90,13 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
             foundUser.refreshToken = newRefreshToken;
             const result = await foundUser.save();
 
+            console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
             tokenReturn.errorMessage = '';
             tokenReturn.accessToken = accessToken;
             tokenReturn.newRefreshToken = newRefreshToken;
-            console.log("Return ")
+            console.log("Return ", JSON.stringify(tokenReturn))
             return tokenReturn;
         }
     );

@@ -26,7 +26,6 @@ function refreshToken(token) {
             errorMessage: 'Error Occurs'
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token });
-        console.log('here is the found user ');
         // Detected refresh token reuse!
         if (!foundUser) {
             // verify(
@@ -76,12 +75,13 @@ function refreshToken(token) {
             // Saving refreshToken with current user
             foundUser.refreshToken = newRefreshToken;
             const result = yield foundUser.save();
+            console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
             tokenReturn.errorMessage = '';
             tokenReturn.accessToken = accessToken;
             tokenReturn.newRefreshToken = newRefreshToken;
-            console.log("Return ");
+            console.log("Return ", JSON.stringify(tokenReturn));
             return tokenReturn;
         }));
         return tokenReturn;

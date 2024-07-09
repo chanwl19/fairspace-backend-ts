@@ -12,7 +12,9 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     res.clearCookie('jwt', cookie);
 
     const response = await refreshService.refreshToken(refreshToken.toString());
+    console.log("In controoler response is " , JSON.stringify(response));
     if (response.errorCode !== 0) {
+        console.log('esponse.errorCode ' , response.errorCode)
         return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
     }
 
