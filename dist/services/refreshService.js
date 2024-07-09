@@ -75,6 +75,7 @@ function refreshToken(token) {
             // Saving refreshToken with current user
             foundUser.refreshToken = newRefreshToken;
             const result = yield foundUser.save();
+            console.log('result ', result);
             console.log('Save refresh token successfully');
             // return new refresh token and access token to controller
             tokenReturn.errorCode = 0;
@@ -84,6 +85,7 @@ function refreshToken(token) {
             console.log("Return ", JSON.stringify(tokenReturn));
             return tokenReturn;
         }));
+        console.log('here rto return default ');
         return tokenReturn;
     });
 }
