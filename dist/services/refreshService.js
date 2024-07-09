@@ -29,30 +29,26 @@ function refreshToken(token) {
         const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
         // Detected refresh token reuse!
         if (!foundUser) {
-            // verify(
-            //     token,
-            //     process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
-            //     async (err, decoded) => {
-            //         if (err) {
-            //             tokenReturn.errorCode = 403;
-            //             tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
-            //             return tokenReturn;
-            //         }
-            //         // const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
-            //         // if (hackedUser){
-            //         //     hackedUser.refreshToken = "";
-            //         //     const result = await hackedUser.save();
-            //         // };
-            //     }
-            // )
-            console.log('I am here no user found');
+            (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+                if (err) {
+                    tokenReturn.errorCode = 403;
+                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
+                    return tokenReturn;
+                }
+                const hackedUser = yield user_1.User.findOne({ userId: decoded.userId });
+                if (hackedUser) {
+                    hackedUser.refreshToken = "";
+                    const result = yield hackedUser.save();
+                }
+                ;
+            }));
             tokenReturn.errorCode = 403;
             tokenReturn.errorMessage = 'Forbidden No user found ' + token;
             return tokenReturn;
         }
-        console.log('before verify jwt');
-        // evaluate jwt 
-        const verifyJwt = () => __awaiter(this, void 0, void 0, function* () {
+        else {
+            console.log('before verify jwt');
+            // evaluate jwt 
             (0, jsonwebtoken_1.verify)(token, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', (err, decoded) => __awaiter(this, void 0, void 0, function* () {
                 if (err) {
                     if (foundUser) {
@@ -72,7 +68,7 @@ function refreshToken(token) {
                 const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
                 // Saving refreshToken with current user
                 foundUser.refreshToken = newRefreshToken;
-                yield foundUser.save();
+                const saveUser = yield foundUser.save();
                 console.log('Save refresh token successfully');
                 // return new refresh token and access token to controller
                 tokenReturn.errorCode = 0;
@@ -81,10 +77,9 @@ function refreshToken(token) {
                 tokenReturn.newRefreshToken = newRefreshToken;
                 tokenReturn.user = foundUser;
                 console.log("Return ", JSON.stringify(tokenReturn));
-                return tokenReturn;
+                //return tokenReturn;
             }));
-        });
-        yield verifyJwt();
+        }
         console.log('here rto return default ');
         return tokenReturn;
     });

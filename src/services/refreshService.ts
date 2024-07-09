@@ -30,30 +30,28 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     const foundUser = await User.findOne({ refreshToken: token }).populate('roles');
     // Detected refresh token reuse!
     if (!foundUser) {
-        // verify(
-        //     token,
-        //     process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
-        //     async (err, decoded) => {
-        //         if (err) {
-        //             tokenReturn.errorCode = 403;
-        //             tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
-        //             return tokenReturn;
-        //         }
-        //         // const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId});
-        //         // if (hackedUser){
-        //         //     hackedUser.refreshToken = "";
-        //         //     const result = await hackedUser.save();
-        //         // };
-        //     }
-        // )
-        console.log('I am here no user found');
+        verify(
+            token,
+            process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
+            async (err, decoded) => {
+                if (err) {
+                    tokenReturn.errorCode = 403;
+                    tokenReturn.errorMessage = 'Forbidden Error verify refresh token';
+                    return tokenReturn;
+                }
+                const hackedUser = await User.findOne({ userId: (decoded as TokenInterface).userId });
+                if (hackedUser) {
+                    hackedUser.refreshToken = "";
+                    const result = await hackedUser.save();
+                };
+            }
+        )
         tokenReturn.errorCode = 403;
         tokenReturn.errorMessage = 'Forbidden No user found ' + token;
         return tokenReturn;
-    }
-    console.log('before verify jwt')
-    // evaluate jwt 
-    const verifyJwt = async () => {
+    } else {
+        console.log('before verify jwt');
+        // evaluate jwt 
         verify(
             token,
             process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY',
@@ -87,7 +85,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
 
                 // Saving refreshToken with current user
                 foundUser.refreshToken = newRefreshToken;
-                await foundUser.save();
+                const saveUser = await foundUser.save();
 
                 console.log('Save refresh token successfully');
                 // return new refresh token and access token to controller
@@ -97,11 +95,10 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
                 tokenReturn.newRefreshToken = newRefreshToken;
                 tokenReturn.user = foundUser;
                 console.log("Return ", JSON.stringify(tokenReturn))
-                return tokenReturn;
+                //return tokenReturn;
             }
-        )
-    };
-    await verifyJwt();
+        );
+    }
     console.log('here rto return default ');
     return tokenReturn;
 }
