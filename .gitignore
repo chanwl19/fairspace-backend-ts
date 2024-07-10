@@ -1,2 +1,4 @@
 .idx
 node_modules
+dist
+public
