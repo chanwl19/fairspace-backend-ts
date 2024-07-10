@@ -6,7 +6,8 @@ const userRoute: Router = Router();
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)
-    .get(userController.getUser);
+    .get(userController.getUser)
+    .patch(userController.updateUser);
 
 
 

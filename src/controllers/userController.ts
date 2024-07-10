@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import { body, check, validationResult } from 'express-validator';
 import { ApiError } from '../models/apiError';
 import * as userService from '../services/userService';
+import fileUpload from "../middlewares/fileUpload";
 
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     await check("userId", "userId cannot be blank").isLength({min: 9, max: 9}).run(req);
@@ -40,4 +41,13 @@ export async function getUser(req: Request, res: Response, next: NextFunction): 
     } catch {
         return next(new ApiError("Error Occurs", 500, []));
     }   
+}
+
+export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    console.log('start to upload file');
+    fileUpload.single('image');
+    console.log('end to upload file');
+    const file = req.file as Express.Multer.File;
+    console.log('file ', file)
+    const response = await userService.updateUser(req.body.phoneNo, file.path, req.body._id);
 }

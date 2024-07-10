@@ -29,5 +29,6 @@ const userRoute = (0, express_1.Router)();
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)
-    .get(userController.getUser);
+    .get(userController.getUser)
+    .patch(userController.updateUser);
 exports.default = userRoute;

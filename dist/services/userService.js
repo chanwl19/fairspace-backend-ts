@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.signup = void 0;
+exports.updateUser = exports.getUser = exports.signup = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
+const encryptText_1 = require("../middlewares/encryptText");
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
@@ -50,7 +51,6 @@ function signup(userId, password, email, roleIds) {
 exports.signup = signup;
 function getUser(userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("userid in service " + userId);
         const userReturn = {
             user: new user_1.User(),
             errorCode: 500,
@@ -76,3 +76,31 @@ function getUser(userId) {
     });
 }
 exports.getUser = getUser;
+function updateUser(phoneNo, image, _id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const updateReturn = {
+            errorCode: 500,
+            errorMessage: 'Error Occurs'
+        };
+        try {
+            const user = yield user_1.User.findById(_id);
+            if (!user) {
+                updateReturn.errorCode = 404;
+                updateReturn.errorMessage = 'User not found';
+                return updateReturn;
+            }
+            user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+            user.image = image;
+            yield user.save();
+            updateReturn.errorCode = 0;
+            updateReturn.errorMessage = "";
+        }
+        catch (_a) {
+            updateReturn.errorCode = 500;
+            updateReturn.errorMessage = 'Error Occurs';
+            return updateReturn;
+        }
+        return updateReturn;
+    });
+}
+exports.updateUser = updateUser;

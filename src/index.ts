@@ -17,8 +17,7 @@ const env = process.env.ENV || 'dev';
 
 const app = express();
 
-//Set up to handle options credentials check - cookies
-//app.use(cors());
+app.use(express.static('uploads'));
 
 // Cross Origin Resource Sharing
 app.use(cors(
@@ -56,7 +55,8 @@ app.use('/auth', authRoute);
 //Route refresh to refreshRoute
 app.use('/refresh', refreshRoute);
 //Route user to userRoute
-app.use('/user', authMiddleware.isAuthorized, userRoute);
+//app.use('/user', authMiddleware.isAuthorized, userRoute);
+app.use('/user',  userRoute);
 //Catch error
 app.use((error: ApiError, req: Request, res: Response, next: NextFunction) => {
   const status = error.statusCode || 500;

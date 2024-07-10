@@ -1,7 +1,7 @@
 import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
-
+import { encrypt } from '../middlewares/encryptText'; 
 
 interface BasicReturn{
     errorCode: number; 
@@ -51,7 +51,6 @@ export async function signup(userId: string, password: string, email: string, ro
 
 export async function getUser(userId: string): Promise<UserReturn> {
 
-    console.log("userid in service " + userId)
     const userReturn: UserReturn = {
         user: new User(),
         errorCode: 500,
@@ -76,4 +75,30 @@ export async function getUser(userId: string): Promise<UserReturn> {
     return userReturn;
 }
 
+export async function updateUser(phoneNo: string, image: string, _id: string): Promise<BasicReturn> {
+    const updateReturn: BasicReturn = {
+        errorCode: 500,
+        errorMessage: 'Error Occurs'
+    };
+
+    try {
+        const user = await User.findById(_id);
+        if (!user) {
+            updateReturn.errorCode = 404;
+            updateReturn.errorMessage = 'User not found';
+            return updateReturn;
+        }
+        user.phoneNo = encrypt(phoneNo);
+        user.image = image;
+        await user.save();
+        updateReturn.errorCode = 0;
+        updateReturn.errorMessage = "";
+    } catch {
+        updateReturn.errorCode = 500;
+        updateReturn.errorMessage = 'Error Occurs';
+        return updateReturn;
+    }
+    
+    return updateReturn;
+}
 

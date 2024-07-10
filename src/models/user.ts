@@ -29,6 +29,9 @@ const userSchema = new Schema({
   phoneNo: {
     type: String
   },
+  image: {
+    type: String
+  },
   refreshToken: {
     type: String
   },

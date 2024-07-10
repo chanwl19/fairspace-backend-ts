@@ -31,6 +31,9 @@ const userSchema = new mongoose_1.Schema({
     phoneNo: {
         type: String
     },
+    image: {
+        type: String
+    },
     refreshToken: {
         type: String
     },

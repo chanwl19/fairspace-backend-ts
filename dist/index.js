@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -35,13 +12,11 @@ const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const refreshRoute_1 = __importDefault(require("./routes/refreshRoute"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const authMiddleware = __importStar(require("./middlewares/authorize"));
 dotenv_1.default.config();
 const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
-//Set up to handle options credentials check - cookies
-//app.use(cors());
+app.use(express_1.default.static('uploads'));
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {
@@ -73,7 +48,8 @@ app.use('/auth', authRoute_1.default);
 //Route refresh to refreshRoute
 app.use('/refresh', refreshRoute_1.default);
 //Route user to userRoute
-app.use('/user', authMiddleware.isAuthorized, userRoute_1.default);
+//app.use('/user', authMiddleware.isAuthorized, userRoute);
+app.use('/user', userRoute_1.default);
 //Catch error
 app.use((error, req, res, next) => {
     const status = error.statusCode || 500;
