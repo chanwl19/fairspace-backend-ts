@@ -92,7 +92,7 @@ function updateUser(req, res, next) {
         console.log('end to upload file');
         const file = req.file;
         console.log('file ', file);
-        const response = yield userService.updateUser(req.body.phoneNo, file.path, req.body._id);
+        //const response = await userService.updateUser(req.body.phoneNo, file.path, req.body._id);
     });
 }
 exports.updateUser = updateUser;
