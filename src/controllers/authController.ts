@@ -37,7 +37,7 @@ export async function logout(req: Request, res: Response, next: NextFunction): P
         return;
     }
 
-    const response = await authService.logout(refreshToken);
+    const response = await authService.logout(req.body.user._id.toString());
 
     if (response !== 0) {
         res.status(204);

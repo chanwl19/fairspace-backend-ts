@@ -55,13 +55,13 @@ function login(userId, password) {
     });
 }
 exports.login = login;
-function logout(refreshToken) {
+function logout(_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield user_1.User.findOne({ refreshToken: refreshToken });
+        const user = yield user_1.User.findById(_id);
         if (!user) {
             return -1;
         }
-        const result = yield user_1.User.findByIdAndUpdate(user._id.toString(), { refreshToken: '' });
+        const result = yield user_1.User.findByIdAndUpdate(_id, { refreshToken: '' });
         return 0;
     });
 }

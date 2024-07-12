@@ -66,7 +66,7 @@ function logout(req, res, next) {
             res.status(204);
             return;
         }
-        const response = yield authService.logout(refreshToken);
+        const response = yield authService.logout(req.body.user._id.toString());
         if (response !== 0) {
             res.status(204);
         }
