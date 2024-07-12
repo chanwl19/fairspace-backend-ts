@@ -14,14 +14,17 @@ const fileUpload = (0, multer_1.default)({
     limits: { fileSize: 500000 },
     storage: multer_1.default.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, 'uploads');
+            console.log("In multer storage destination");
+            cb(null, 'uploads/images');
         },
         filename: (req, file, cb) => {
+            console.log("In multer storage filename");
             const ext = MIME_TYPE_MAP[file.mimetype];
             cb(null, (0, uuid_1.v4)() + '.' + ext);
         }
     }),
     fileFilter: (req, file, cb) => {
+        console.log("In multer storage fileFilter");
         const isValid = !!MIME_TYPE_MAP[file.mimetype];
         if (isValid) {
             cb(null, true);
