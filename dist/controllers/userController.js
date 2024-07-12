@@ -91,7 +91,7 @@ function updateUser(req, res, next) {
         fileUpload_1.default.single('image');
         console.log('end to upload file');
         const file = req.body.file;
-        console.log('file ', file);
+        console.log('file is ', file);
         //const response = await userService.updateUser(req.body.phoneNo, file.path, req.body._id);
     });
 }
