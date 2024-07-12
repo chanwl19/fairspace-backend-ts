@@ -50,7 +50,7 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
     console.log('start to upload file body ' , req.body);
     console.log('end to upload file');
     const file = req.file as Express.Multer.File;
-    console.log('new file path is ', file)
+    console.log('file path is ', file)
     //const response = await userService.updateUser(req.body.phoneNo, file.path, req.body._id);
 }
 
