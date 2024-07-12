@@ -59,10 +59,14 @@ export async function login(userId: string, password: string): Promise<LoginRetu
 }
 
 export async function logout(_id: string): Promise<number> {
+    console.log("in service _id ", _id);
     const user = await User.findById(_id);
+    console.log("Found user ", user);
     if (!user){
         return -1;
     }
     const result = await User.findByIdAndUpdate(_id, {refreshToken : ''});
+    
+    console.log("result ", result);
     return 0;
 }

@@ -57,11 +57,14 @@ function login(userId, password) {
 exports.login = login;
 function logout(_id) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("in service _id ", _id);
         const user = yield user_1.User.findById(_id);
+        console.log("Found user ", user);
         if (!user) {
             return -1;
         }
         const result = yield user_1.User.findByIdAndUpdate(_id, { refreshToken: '' });
+        console.log("result ", result);
         return 0;
     });
 }

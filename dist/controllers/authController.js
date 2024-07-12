@@ -63,6 +63,7 @@ function logout(req, res, next) {
             return;
         }
         const refreshToken = cookies.jwt;
+        console.log("RefreshToken ", refreshToken);
         if (!refreshToken) {
             res.status(204);
             return;
