@@ -24,7 +24,6 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 }
 
 export async function logout(req: Request, res: Response, next: NextFunction): Promise<void> {
-    console.log("user ", JSON.stringify(req.body.user));
     const cookies = req.cookies;
     if (!cookies) {
         res.status(204);
@@ -32,7 +31,6 @@ export async function logout(req: Request, res: Response, next: NextFunction): P
     }
 
     const refreshToken = cookies.jwt;
-    console.log("RefreshToken " , refreshToken);
     if (!refreshToken) {
         res.status(204);
         return;

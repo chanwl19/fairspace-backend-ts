@@ -35,8 +35,7 @@ app.use((0, cors_1.default)(({
     optionsSuccessStatus: 200
 })));
 // built-in middleware to handle urlencoded form data
-app.use(express_1.default.urlencoded({ extended: false }));
-// for json
+app.use(express_1.default.urlencoded());
 app.use(express_1.default.json());
 // for form data
 app.use('/', express_1.default.static(path_1.default.join(__dirname, '/public')));

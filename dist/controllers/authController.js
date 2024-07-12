@@ -56,14 +56,12 @@ function login(req, res, next) {
 exports.login = login;
 function logout(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("user ", JSON.stringify(req.body.user));
         const cookies = req.cookies;
         if (!cookies) {
             res.status(204);
             return;
         }
         const refreshToken = cookies.jwt;
-        console.log("RefreshToken ", refreshToken);
         if (!refreshToken) {
             res.status(204);
             return;
