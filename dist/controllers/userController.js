@@ -31,15 +31,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUser = exports.getUser = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const apiError_1 = require("../models/apiError");
 const userService = __importStar(require("../services/userService"));
-const fileUpload_1 = __importDefault(require("../middlewares/fileUpload"));
 function signup(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);
@@ -88,10 +84,9 @@ function updateUser(req, res, next) {
         console.log('start to upload file phoneNo ', req.body.phoneNo);
         console.log('start to upload file _id ', req.body._id);
         console.log('start to upload file body ', req.body);
-        fileUpload_1.default.single('image');
         console.log('end to upload file');
-        const file = req.body.image;
-        console.log('new file path is ', file.path);
+        const file = req.file;
+        console.log('new file path is ', file);
         //const response = await userService.updateUser(req.body.phoneNo, file.path, req.body._id);
     });
 }

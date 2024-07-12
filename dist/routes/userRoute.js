@@ -22,13 +22,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const userController = __importStar(require("../controllers/userController"));
+const fileUpload_1 = __importDefault(require("../middlewares/fileUpload"));
 const userRoute = (0, express_1.Router)();
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)
     .get(userController.getUser)
-    .patch(userController.updateUser);
+    .patch(fileUpload_1.default.single('image'), userController.updateUser);
 exports.default = userRoute;
