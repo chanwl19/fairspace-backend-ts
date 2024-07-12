@@ -83,7 +83,10 @@ function getUser(req, res, next) {
 exports.getUser = getUser;
 function updateUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('start to upload file');
+        console.log('start to upload file image ', req);
+        console.log('start to upload file phoneNo ', req.body.phoneNo);
+        console.log('start to upload file _id ', req.body._id);
+        console.log('start to upload file body ', req.body);
         fileUpload_1.default.single('image');
         console.log('end to upload file');
         const file = req.file;

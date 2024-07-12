@@ -8,6 +8,7 @@ import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
 import { ApiError } from './models/apiError';
 import mongoose from 'mongoose';
+
 import * as authMiddleware from './middlewares/authorize';
 
 dotenv.config();
@@ -16,8 +17,6 @@ const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.
 const env = process.env.ENV || 'dev';
 
 const app = express();
-
-app.use(express.static('uploads'));
 
 // Cross Origin Resource Sharing
 app.use(cors(
@@ -40,15 +39,14 @@ app.use(cors(
 
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
-
-// built-in middleware for json 
+// for json
 app.use(express.json());
+// for form data
+app.use('/', express.static(path.join(__dirname, '/public')));
 
 //middleware for cookies
 app.use(cookieParser());
 
-//serve static files
-app.use('/', express.static(path.join(__dirname, '/public')));
 
 //Route login to authRoute
 app.use('/auth', authRoute);

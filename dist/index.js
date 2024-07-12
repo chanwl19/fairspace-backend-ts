@@ -16,7 +16,6 @@ dotenv_1.default.config();
 const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
 const app = (0, express_1.default)();
-app.use(express_1.default.static('uploads'));
 // Cross Origin Resource Sharing
 app.use((0, cors_1.default)(({
     origin: (origin, callback) => {
@@ -37,12 +36,12 @@ app.use((0, cors_1.default)(({
 })));
 // built-in middleware to handle urlencoded form data
 app.use(express_1.default.urlencoded({ extended: false }));
-// built-in middleware for json 
+// for json
 app.use(express_1.default.json());
+// for form data
+app.use('/', express_1.default.static(path_1.default.join(__dirname, '/public')));
 //middleware for cookies
 app.use((0, cookie_parser_1.default)());
-//serve static files
-app.use('/', express_1.default.static(path_1.default.join(__dirname, '/public')));
 //Route login to authRoute
 app.use('/auth', authRoute_1.default);
 //Route refresh to refreshRoute
