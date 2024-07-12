@@ -45,6 +45,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction): 
 }
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    console.log("now in upload file")
     console.log('start to upload file image ' , req);
     console.log('start to upload file phoneNo ' , req.body.phoneNo);
     console.log('start to upload file _id ' , req.body._id);
