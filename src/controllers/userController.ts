@@ -43,14 +43,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction): 
 }
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    console.log("now in upload file")
-    console.log('start to upload file image ' , req.body, ' file is ', req.file);
-    console.log('start to upload file phoneNo ' , req.body.phoneNo);
-    console.log('start to upload file _id ' , req.body._id);
-    console.log('start to upload file body ' , req.body);
-    console.log('end to upload file');
     const file = req.file as Express.Multer.File;
-    console.log('file path is ', file)
     const response = await userService.updateUser(req.body.phoneNo, file, req.body._id);
 }
 

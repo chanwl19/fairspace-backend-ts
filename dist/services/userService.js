@@ -88,6 +88,7 @@ function updateUser(phoneNo, image, _id) {
             errorMessage: 'Error Occurs'
         };
         try {
+            console.log("Finding user");
             const user = yield user_1.User.findById(_id);
             if (!user) {
                 updateReturn.errorCode = 404;

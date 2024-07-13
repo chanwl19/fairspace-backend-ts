@@ -79,14 +79,7 @@ function getUser(req, res, next) {
 exports.getUser = getUser;
 function updateUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("now in upload file");
-        console.log('start to upload file image ', req.body, ' file is ', req.file);
-        console.log('start to upload file phoneNo ', req.body.phoneNo);
-        console.log('start to upload file _id ', req.body._id);
-        console.log('start to upload file body ', req.body);
-        console.log('end to upload file');
         const file = req.file;
-        console.log('file path is ', file);
         const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id);
     });
 }
