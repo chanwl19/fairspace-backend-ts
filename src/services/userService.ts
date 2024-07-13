@@ -80,7 +80,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
 }
 
 export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    const googleKeyFilePath = path.join(process.cwd(), 'src/services/googlekey.json');
+    const googleKeyFilePath = path.join(process.cwd(), 'src/keyfolder/googlekey.json');
     const storage = new Storage({ keyFilename: googleKeyFilePath, projectId: process.env.GOOGLE_PROJECT_ID });
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const updateReturn: BasicReturn = {
