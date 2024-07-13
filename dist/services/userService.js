@@ -99,7 +99,6 @@ function updateUser(phoneNo, image, idKey) {
                 return updateReturn;
             }
             ;
-            console.log("Before upload image image ", image);
             if (image) {
                 console.log("File found, trying to upload...");
                 const extArray = image.mimetype.split("/");
@@ -112,7 +111,7 @@ function updateUser(phoneNo, image, idKey) {
                     console.log("Success");
                 });
                 blobStream.on("error", (error) => {
-                    console.log("error ", error);
+                    console.log("error ", error.message);
                 });
                 blobStream.end(image.buffer);
             }

@@ -96,7 +96,6 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             return updateReturn;
         };
 
-        console.log("Before upload image image ", image);
         if (image) {
             console.log("File found, trying to upload...");
             const extArray = image.mimetype.split("/");
@@ -110,7 +109,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
                 console.log("Success");
             });
             blobStream.on("error", (error) => {
-                console.log("error ", error );
+                console.log("error ", error.message );
             });
             blobStream.end(image.buffer);
         }
