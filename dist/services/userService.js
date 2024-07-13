@@ -84,7 +84,7 @@ function getUser(userId) {
 exports.getUser = getUser;
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const googleKeyFilePath = path_1.default.join(process.cwd(), '../keyfolder/googlekey.json');
+        const googleKeyFilePath = path_1.default.join(process.cwd(), 'keyfolder/googlekey.json');
         const storage = new storage_1.Storage({ keyFilename: googleKeyFilePath, projectId: process.env.GOOGLE_PROJECT_ID });
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         const updateReturn = {
