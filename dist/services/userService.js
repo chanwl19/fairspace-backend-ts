@@ -14,6 +14,8 @@ const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
+const uuid_1 = require("uuid");
+const storage_1 = require("@google-cloud/storage");
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
@@ -78,6 +80,8 @@ function getUser(userId) {
 exports.getUser = getUser;
 function updateUser(phoneNo, image, _id) {
     return __awaiter(this, void 0, void 0, function* () {
+        const storage = new storage_1.Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
+        const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
@@ -89,8 +93,20 @@ function updateUser(phoneNo, image, _id) {
                 updateReturn.errorMessage = 'User not found';
                 return updateReturn;
             }
+            ;
+            if (image) {
+                console.log("File found, trying to upload...");
+                const extArray = image.mimetype.split("/");
+                const extension = extArray[extArray.length - 1];
+                const fileName = (0, uuid_1.v4)() + extension;
+                const blob = bucket.file(fileName);
+                const blobStream = blob.createWriteStream();
+                blobStream.on("finish", () => {
+                    console.log("Success");
+                });
+                blobStream.end(image.buffer);
+            }
             user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
-            user.image = image;
             yield user.save();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";

@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "intricate-tempo-428002-k2",
+    "private_key_id": "378f3a4fc835747b55f6af4ca04c0b8939381fe8",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDSFiiwXdbakXlx\n4VG4m77UVtWuLZ01/MCpxv0nkkslz6jXD5X0w/oE4X0a2Yk16PbK3fBeShH/PCxh\n4eoA/qrlCZfDvs0SKzc6k8WBL3wgfVbvxLcuRp3NxwloUei+42FW/f/63LntVg8i\nEtMFSf3ymqvl6IPak4EW11kw/gqObVBE9f5SNVO48GRulOkfVqicuG9BxGaoEMF0\nd9rae2M4ismBfhg2khuUb4rrzCnSHbYWpXbxihzSC/o/V0RReEGf6LMKsnXBbVdd\nIPDLHCFjZ0pl9OR24LQw2EXbkSptC93lyl2dEsVCp5d71+shStLMNothlDiiXd6a\n3ZG6nvjPAgMBAAECggEABumWvQCPJUigzPo6cnzqimufAvsRGKm5jfyGggG95/Y6\n/wbOL2MKhSa8M2oIhYOmBN1/lh4RFRkwQhWpNTPiyb+9+4p515tFICbJSDSq/IeK\nGNKJhd9Xqb0oBAOgyTVnE5acWaYWTXShOrKRJn0LH4bBK54x2QRZmBMpJg0G8y1n\n5ke+117tOlsdbj6Ae2WUrCuhwef32Q0d99xVri5K6wA+sDaJkGQ112sAJnLhhP4w\nx+Al6SHKMcVgeja2wtmzggwJEOcFbJlJz96KLM4fGU4K5iCLbCp2VdHH13OW+XPl\nFznx3MZv8yEjXrSs/el177Sc7auxgMQne0gPid6pPQKBgQDw05oGmKIi8/p5TEp8\nE17ltOw0UY+c3OprmvIOk7Q2zFJD97XinTXTfKyemtiJqAnNLEPK/qF91K7sspQi\nJ4BhwH1TA7XwQmtLDAOmWqGfaJdIlUnZIwMUafq7Hzh8fK+tef3kZp5N4EU7tWYn\nESKpDAX6AlOCjONACsPY+3+ylQKBgQDfUrzwHx+95HTp3Jo0G5Jmt0pcSQgrtXIB\n/GyF39ohoHrnxBjYil6NUOjJSq5qmEQnSTIDt3L9y93D81ABNBBWwc1sYaSsWGYw\ngeINqCXbD7uOBvjBuPFmLobq4PqyaUg9PsqoH3bZEsxdrR4yxl7PBXtPk6K8QOt7\npncoYDmo0wKBgQDPLIn1oLrirNbOILZ3FMbvf3wv6fZM8LNtzIbtyV0gQxeGRwQe\npjXW8QsjCny7t2ZvLeRILlNJB31QPLQ4yZik/04Q60FKJildD0HYi2E83GJA28UC\n2h7dIerDrTEPzsfmyeqD4U/QGN4WZpAxjYkuuhwuHnAu//rDbj9bW8hYHQKBgQCb\nooSr73TmmNVluej5kZGI5gn7oKYCGBSZD7rt3aCeOMIOzVnnZx8X6yAgUFyXSwCM\nRHWHo4yPFUm66tGB1S/h1nR8KNxjg8PL4GiSzfF75k32YCNylpoddSVvgVUVi0vd\n6um/GxZvl6s3SZO3HQoryo0yWxhZjADQjqWSTOVCIwKBgBmmgrL9ww/54EFvllEC\nQpvXlHobcMf7C52hkHXEdZek70uuIaqwRSCSB2Q4YmvuJworPsNd9+ST/iGaRUZG\nhTX/4gV86N25aysyhahBPRmE5vj30dl0dAD+PvbASlFgWZJMuBnb5Xzx3qNu4V+V\nExgvWjt5rC5rhJKyzxCs2F6B\n-----END PRIVATE KEY-----\n",
+    "client_email": "fairspaceadmin@intricate-tempo-428002-k2.iam.gserviceaccount.com",
+    "client_id": "117021666547708802467",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fairspaceadmin%40intricate-tempo-428002-k2.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
+  

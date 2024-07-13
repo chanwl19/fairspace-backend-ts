@@ -1,14 +1,18 @@
 import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
-import { encrypt } from '../middlewares/encryptText'; 
+import { encrypt } from '../middlewares/encryptText';
+import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
+import { Storage } from '@google-cloud/storage';
 
-interface BasicReturn{
-    errorCode: number; 
+
+interface BasicReturn {
+    errorCode: number;
     errorMessage: string;
 }
 
-interface UserReturn extends BasicReturn{
+interface UserReturn extends BasicReturn {
     user: InstanceType<typeof User>;
 }
 
@@ -18,7 +22,7 @@ export async function signup(userId: string, password: string, email: string, ro
         errorMessage: 'Error Occurs'
     };
     //check if user exist
-    const duplicatedUser = await User.findOne({$or: [{userId: userId},{email: email}]});
+    const duplicatedUser = await User.findOne({ $or: [{ userId: userId }, { email: email }] });
 
     if (duplicatedUser) {
         signupReturn.errorCode = 409;
@@ -27,7 +31,7 @@ export async function signup(userId: string, password: string, email: string, ro
     }
 
     //check if role exists
-    const roles = await Role.find({ roleId : roleIds});
+    const roles = await Role.find({ roleId: roleIds });
 
     if (!roles || roles.length === 0) {
         signupReturn.errorCode = 404;
@@ -58,7 +62,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
     };
 
     try {
-        const user = await User.findOne({ userId: userId}).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
+        const user = await User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
         if (!user) {
             userReturn.errorCode = 404;
             userReturn.errorMessage = 'User not found';
@@ -75,7 +79,9 @@ export async function getUser(userId: string): Promise<UserReturn> {
     return userReturn;
 }
 
-export async function updateUser(phoneNo: string, image: string, _id: string): Promise<BasicReturn> {
+export async function updateUser(phoneNo: string, image: Express.Multer.File, _id: string): Promise<BasicReturn> {
+    const storage = new Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
+    const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -87,9 +93,23 @@ export async function updateUser(phoneNo: string, image: string, _id: string): P
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
+        };
+
+        if (image) {
+            console.log("File found, trying to upload...");
+            const extArray = image.mimetype.split("/");
+            const extension = extArray[extArray.length - 1];
+            const fileName = uuidv4() + extension;
+            const blob = bucket.file(fileName);
+            const blobStream = blob.createWriteStream();
+
+            blobStream.on("finish", () => {
+                console.log("Success");
+            });
+            blobStream.end(image.buffer);
         }
+
         user.phoneNo = encrypt(phoneNo);
-        user.image = image;
         await user.save();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
@@ -98,7 +118,7 @@ export async function updateUser(phoneNo: string, image: string, _id: string): P
         updateReturn.errorMessage = 'Error Occurs';
         return updateReturn;
     }
-    
+
     return updateReturn;
 }
 
