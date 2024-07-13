@@ -80,7 +80,7 @@ exports.getUser = getUser;
 function updateUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const file = req.file;
-        const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id);
+        const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id.toString());
     });
 }
 exports.updateUser = updateUser;

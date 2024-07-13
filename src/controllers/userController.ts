@@ -44,6 +44,6 @@ export async function getUser(req: Request, res: Response, next: NextFunction): 
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const file = req.file as Express.Multer.File;
-    const response = await userService.updateUser(req.body.phoneNo, file, req.body._id);
+    const response = await userService.updateUser(req.body.phoneNo, file, req.body._id.toString());
 }
 
