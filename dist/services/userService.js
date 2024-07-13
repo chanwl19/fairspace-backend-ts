@@ -90,6 +90,7 @@ function updateUser(phoneNo, image, _id) {
         try {
             console.log("Finding user");
             const user = yield user_1.User.findById(_id);
+            console.log("user ", user);
             if (!user) {
                 updateReturn.errorCode = 404;
                 updateReturn.errorMessage = 'User not found';
