@@ -82,6 +82,8 @@ function updateUser(phoneNo, image, _id) {
     return __awaiter(this, void 0, void 0, function* () {
         const storage = new storage_1.Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+        console.log('storage ', storage);
+        console.log('bucket ', bucket);
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
@@ -94,11 +96,13 @@ function updateUser(phoneNo, image, _id) {
                 return updateReturn;
             }
             ;
+            console.log("Before upload image image ", image);
             if (image) {
                 console.log("File found, trying to upload...");
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + extension;
+                console.log("Upload file name  ", fileName);
                 const blob = bucket.file(fileName);
                 const blobStream = blob.createWriteStream();
                 blobStream.on("finish", () => {

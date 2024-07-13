@@ -82,6 +82,8 @@ export async function getUser(userId: string): Promise<UserReturn> {
 export async function updateUser(phoneNo: string, image: Express.Multer.File, _id: string): Promise<BasicReturn> {
     const storage = new Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+    console.log('storage ', storage)
+    console.log('bucket ', bucket)
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -95,11 +97,13 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, _i
             return updateReturn;
         };
 
+        console.log("Before upload image image ", image);
         if (image) {
             console.log("File found, trying to upload...");
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = uuidv4() + extension;
+            console.log("Upload file name  ", fileName)
             const blob = bucket.file(fileName);
             const blobStream = blob.createWriteStream();
 
