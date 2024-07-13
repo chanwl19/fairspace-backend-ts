@@ -111,6 +111,9 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             blobStream.on("finish", () => {
                 console.log("Success");
             });
+            blobStream.on("error", (error) => {
+                console.log("error ", error );
+            });
             blobStream.end(image.buffer);
         }
 

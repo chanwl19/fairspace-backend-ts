@@ -109,6 +109,9 @@ function updateUser(phoneNo, image, idKey) {
                 blobStream.on("finish", () => {
                     console.log("Success");
                 });
+                blobStream.on("error", (error) => {
+                    console.log("error ", error);
+                });
                 blobStream.end(image.buffer);
             }
             user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
