@@ -82,8 +82,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
 export async function updateUser(phoneNo: string, image: Express.Multer.File, _id: string): Promise<BasicReturn> {
     const storage = new Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-    console.log('storage ', storage)
-    console.log('bucket ', bucket)
+    console.log('in update user service')
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'

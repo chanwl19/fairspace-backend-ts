@@ -82,8 +82,7 @@ function updateUser(phoneNo, image, _id) {
     return __awaiter(this, void 0, void 0, function* () {
         const storage = new storage_1.Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-        console.log('storage ', storage);
-        console.log('bucket ', bucket);
+        console.log('in update user service');
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
