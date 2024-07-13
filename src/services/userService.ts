@@ -5,6 +5,7 @@ import { encrypt } from '../middlewares/encryptText';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 import { Storage } from '@google-cloud/storage';
+import * as googleKeyFile from '../keyfolder/googlekey.json'
 
 interface BasicReturn {
     errorCode: number;
@@ -79,7 +80,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
 }
 
 export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    const storage = new Storage({ keyFilename: '../keyfolder/googlekey.json', projectId: process.env.GOOGLE_PROJECT_ID });
+    const storage = new Storage({ keyFilename: googleKeyFile, projectId: process.env.GOOGLE_PROJECT_ID });
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const updateReturn: BasicReturn = {
         errorCode: 500,
