@@ -79,7 +79,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
 }
 
 export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    const storage = new Storage({ keyFilename: `../keyfolder/${process.env.GOOGLE_CLOUD_KEY_FILE}`, projectId: process.env.GOOGLE_PROJECT_ID });
+    const storage = new Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     console.log('in update user service phoneNo ' ,phoneNo, ' idKey ', idKey )
     const updateReturn: BasicReturn = {

@@ -80,7 +80,7 @@ function getUser(userId) {
 exports.getUser = getUser;
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const storage = new storage_1.Storage({ keyFilename: `../keyfolder/${process.env.GOOGLE_CLOUD_KEY_FILE}`, projectId: process.env.GOOGLE_PROJECT_ID });
+        const storage = new storage_1.Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         console.log('in update user service phoneNo ', phoneNo, ' idKey ', idKey);
         const updateReturn = {
