@@ -89,7 +89,7 @@ function updateUser(phoneNo, image, _id) {
         };
         try {
             console.log("Finding user");
-            const user = yield user_1.User.findById(_id);
+            const user = yield user_1.User.findById('667f782e4d1aeff58a9f0d62');
             console.log("user ", user);
             if (!user) {
                 updateReturn.errorCode = 404;

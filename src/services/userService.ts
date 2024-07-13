@@ -90,7 +90,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, _i
 
     try {
         console.log("Finding user");
-        const user = await User.findById(_id);
+        const user = await User.findById('667f782e4d1aeff58a9f0d62');
         console.log("user " , user);
         if (!user) {
             updateReturn.errorCode = 404;
