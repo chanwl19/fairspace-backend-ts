@@ -41,7 +41,8 @@ app.use(cors(
 app.use(express.urlencoded());
 app.use(express.json());
 // for form data
-app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+const directory = path.join(__dirname, "uploads/images");
+app.use('/uploads/images',  express.static(directory));
 
 //middleware for cookies
 app.use(cookieParser());

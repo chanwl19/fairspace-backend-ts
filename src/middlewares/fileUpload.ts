@@ -1,6 +1,7 @@
 import multer, { FileFilterCallback } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from "express";
+import path from "path";
 
 const MIME_TYPE_MAP: { [index: string]: string } = {
     'image/png': 'png',
@@ -16,7 +17,7 @@ const fileUpload =
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
                 console.log("In multer storage destination");
-                cb(null, 'uploads/images');
+                cb(null, path.resolve(__dirname,'../uploads/images'));
             },
             filename: (req: Request, file: Express.Multer.File, cb: DestinationCallback) => {
                 console.log("In multer storage filename");
