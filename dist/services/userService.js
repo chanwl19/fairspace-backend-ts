@@ -102,7 +102,7 @@ function updateUser(phoneNo, image, idKey) {
                 console.log("File found, trying to upload...");
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
-                const fileName = (0, uuid_1.v4)() + extension;
+                const fileName = (0, uuid_1.v4)() + '.' + extension;
                 console.log("Upload file name  ", fileName);
                 const blob = bucket.file(fileName);
                 const blobStream = blob.createWriteStream();

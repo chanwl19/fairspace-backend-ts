@@ -103,7 +103,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             console.log("File found, trying to upload...");
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
-            const fileName = uuidv4() + extension;
+            const fileName = uuidv4() + '.' + extension;
             console.log("Upload file name  ", fileName)
             const blob = bucket.file(fileName);
             const blobStream = blob.createWriteStream();
