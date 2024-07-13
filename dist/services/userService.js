@@ -80,17 +80,14 @@ function getUser(userId) {
 exports.getUser = getUser;
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const storage = new storage_1.Storage({ keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, projectId: process.env.GOOGLE_PROJECT_ID });
+        const storage = new storage_1.Storage({ keyFilename: '../keyfolder/googlekey.json', projectId: process.env.GOOGLE_PROJECT_ID });
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-        console.log('in update user service phoneNo ', phoneNo, ' idKey ', idKey);
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
         try {
-            console.log("Finding user");
             const user = yield user_1.User.findById(idKey);
-            console.log("User found");
             if (!user) {
                 updateReturn.errorCode = 404;
                 updateReturn.errorMessage = 'User not found';
