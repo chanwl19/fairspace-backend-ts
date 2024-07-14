@@ -94,6 +94,7 @@ function updateUser(phoneNo, image, idKey) {
         };
         try {
             const user = yield user_1.User.findById(idKey);
+            let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
             if (!user) {
                 updateReturn.errorCode = 404;
                 updateReturn.errorMessage = 'User not found';
@@ -101,14 +102,13 @@ function updateUser(phoneNo, image, idKey) {
             }
             ;
             if (image) {
-                console.log("File found, trying to upload...");
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
-                console.log("Upload file name  ", fileName);
                 const blob = bucket.file(fileName);
                 const blobStream = blob.createWriteStream();
                 blobStream.on("finish", () => {
+                    url = url + fileName;
                     console.log("Success");
                 });
                 blobStream.on("error", (error) => {
@@ -116,7 +116,10 @@ function updateUser(phoneNo, image, idKey) {
                 });
                 blobStream.end(image.buffer);
             }
-            user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+            if (phoneNo) {
+                user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+            }
+            user.image = url;
             yield user.save();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";

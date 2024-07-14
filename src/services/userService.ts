@@ -91,6 +91,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
 
     try {
         const user = await User.findById(idKey);
+        let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
         if (!user) {
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
@@ -98,15 +99,14 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         };
 
         if (image) {
-            console.log("File found, trying to upload...");
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = uuidv4() + '.' + extension;
-            console.log("Upload file name  ", fileName)
             const blob = bucket.file(fileName);
             const blobStream = blob.createWriteStream();
 
             blobStream.on("finish", () => {
+                url = url + fileName;
                 console.log("Success");
             });
             blobStream.on("error", (error) => {
@@ -114,8 +114,10 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             });
             blobStream.end(image.buffer);
         }
-
-        user.phoneNo = encrypt(phoneNo);
+        if (phoneNo){
+            user.phoneNo = encrypt(phoneNo);
+        }
+        user.image = url;
         await user.save();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
