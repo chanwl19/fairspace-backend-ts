@@ -99,13 +99,16 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         };
 
         if (image) {
-            const extArray = image.mimetype.split("/");
-            const extension = extArray[extArray.length - 1];
-            const fileName = uuidv4() + '.' + extension;
+            // const extArray = image.mimetype.split("/");
+            // const extension = extArray[extArray.length - 1];
+            // const fileName = uuidv4() + '.' + extension;
             console.log("IN upload file");
+            console.log("path " , image.path);
+            console.log("originalname " , image.originalname);
+            console.log("mimetype " , image.mimetype);
             try {
-                const result = await bucket.upload(fileName, {
-                    destination: fileName,
+                const result = await bucket.upload(image.path, {
+                    destination: image.originalname,
                     predefinedAcl: 'publicRead', // Set the file to be publicly readable
                     metadata: {
                         contentType: "application/plain", // Adjust the content type as needed

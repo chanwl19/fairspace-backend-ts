@@ -1,7 +1,7 @@
 import multer, { FileFilterCallback } from 'multer';
-//import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { Request } from "express";
-// import path from "path";
+import path from "path";
 // import { Storage } from "@google-cloud/storage"
 // import dotenv from 'dotenv';
 
@@ -14,7 +14,17 @@ const MIME_TYPE_MAP: { [index: string]: string } = {
 type DestinationCallback = (error: Error | null, destination: string) => void
 
 const fileUpload = multer({
-  storage: multer.memoryStorage(),
+  // storage: multer.memoryStorage(),
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, path.resolve(__dirname, 'images'));
+    },
+    filename: (req: Request, file: Express.Multer.File, cb: DestinationCallback) => {
+      console.log("In multer storage filename");
+      const ext = MIME_TYPE_MAP[file.mimetype];
+      cb(null, uuidv4() + '.' + ext);
+    }
+  }),
   limits: {
     fileSize: 5 * 1024 * 1024,
   },
