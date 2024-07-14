@@ -4,16 +4,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const multer_1 = __importDefault(require("multer"));
-// import { v4 as uuidv4 } from 'uuid';
-// import { Request } from "express";
 // import path from "path";
 // import { Storage } from "@google-cloud/storage"
 // import dotenv from 'dotenv';
+const MIME_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpeg',
+    'image/jpg': 'jpg'
+};
 const fileUpload = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024,
     },
+    fileFilter: (req, file, cb) => {
+        console.log("In multer storage fileFilter");
+        const isValid = !!MIME_TYPE_MAP[file.mimetype];
+        if (isValid) {
+            cb(null, true);
+        }
+        else {
+            cb(new Error('Invalid mime type!'));
+        }
+    }
 });
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file
 // const bucketName = process.env.BUCKET_NAME;

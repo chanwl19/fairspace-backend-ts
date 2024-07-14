@@ -102,27 +102,15 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = uuidv4() + '.' + extension;
-            bucket.upload(image.path.toString(), {
+
+            const result = await bucket.upload(fileName, {
                 destination: fileName,
-            }, function (err, file) {
-                if (err) {
-                    console.error(`Error uploading image image_to_upload.jpeg: ${err}`)
-                } else {
-                    console.log(`Image image_to_upload.jpeg uploaded to ${process.env.BUCKET_NAME }.`)
-
-                    // Making file public to the internet
-                    file?.makePublic(async function (err) {
-                        if (err) {
-                            console.error(`Error making file public: ${err}`)
-                        } else {
-                            console.log(`File ${file?.name} is now public.`)
-                            const publicUrl = file?.publicUrl()
-                            console.log(`Public URL for ${file?.name}: ${publicUrl}`)
-                        }
-                    })
-
+                predefinedAcl: 'publicRead', // Set the file to be publicly readable
+                metadata: {
+                    contentType: "application/plain", // Adjust the content type as needed
                 }
-            })
+            });
+            console.log(result);
             // const blob = bucket.file(fileName);
             // const blobStream = blob.createWriteStream();
 
