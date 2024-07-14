@@ -55,7 +55,6 @@ function syncFile(image) {
                 blobStream.end(image.buffer);
                 blobStream.on("finish", () => resolve(fileName));
                 blobStream.on("error", reject);
-                blobStream.end(image.buffer);
             });
             // blobStream.on("success", () => {return Promise.resolve(fileName)} );
             // blobStream.on("error", () => {
