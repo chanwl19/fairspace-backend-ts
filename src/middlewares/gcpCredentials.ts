@@ -8,7 +8,7 @@ export default function getGCPCredentials(){
       ? {
           credentials: {
             client_email: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
-            private_key: process.env.GCP_PRIVATE_KEY,
+            private_key: process.env.GCP_PRIVATE_KEY?.split(String.raw`\n`).join('\n'),
           },
           projectId: process.env.GCP_PROJECT_ID,
         }
