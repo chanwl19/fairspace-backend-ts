@@ -102,19 +102,40 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = uuidv4() + '.' + extension;
-            const blob = bucket.file(fileName);
-            const blobStream = blob.createWriteStream();
+            bucket.upload(fileName, {
+                destination: fileName,
+            }, function (err, file) {
+                if (err) {
+                    console.error(`Error uploading image image_to_upload.jpeg: ${err}`)
+                } else {
+                    console.log(`Image image_to_upload.jpeg uploaded to ${process.env.BUCKET_NAME }.`)
 
-            blobStream.on("finish", () => {
-                url = url + fileName;
-                console.log("Success");
-            });
-            blobStream.on("error", (error) => {
-                console.log("error ", error.message );
-            });
-            blobStream.end(image.buffer);
+                    // Making file public to the internet
+                    file?.makePublic(async function (err) {
+                        if (err) {
+                            console.error(`Error making file public: ${err}`)
+                        } else {
+                            console.log(`File ${file?.name} is now public.`)
+                            const publicUrl = file?.publicUrl()
+                            console.log(`Public URL for ${file?.name}: ${publicUrl}`)
+                        }
+                    })
+
+                }
+            })
+            // const blob = bucket.file(fileName);
+            // const blobStream = blob.createWriteStream();
+
+            // blobStream.on("finish", () => {
+            //     url = url + fileName;
+            //     console.log("Success");
+            // });
+            // blobStream.on("error", (error) => {
+            //     console.log("error ", error.message );
+            // });
+            // blobStream.end(image.buffer);
         }
-        if (phoneNo){
+        if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
         }
         user.image = url;

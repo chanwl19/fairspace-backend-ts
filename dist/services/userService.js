@@ -105,16 +105,39 @@ function updateUser(phoneNo, image, idKey) {
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
-                const blob = bucket.file(fileName);
-                const blobStream = blob.createWriteStream();
-                blobStream.on("finish", () => {
-                    url = url + fileName;
-                    console.log("Success");
+                bucket.upload(fileName, {
+                    destination: fileName,
+                }, function (err, file) {
+                    if (err) {
+                        console.error(`Error uploading image image_to_upload.jpeg: ${err}`);
+                    }
+                    else {
+                        console.log(`Image image_to_upload.jpeg uploaded to ${process.env.BUCKET_NAME}.`);
+                        // Making file public to the internet
+                        file === null || file === void 0 ? void 0 : file.makePublic(function (err) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                if (err) {
+                                    console.error(`Error making file public: ${err}`);
+                                }
+                                else {
+                                    console.log(`File ${file === null || file === void 0 ? void 0 : file.name} is now public.`);
+                                    const publicUrl = file === null || file === void 0 ? void 0 : file.publicUrl();
+                                    console.log(`Public URL for ${file === null || file === void 0 ? void 0 : file.name}: ${publicUrl}`);
+                                }
+                            });
+                        });
+                    }
                 });
-                blobStream.on("error", (error) => {
-                    console.log("error ", error.message);
-                });
-                blobStream.end(image.buffer);
+                // const blob = bucket.file(fileName);
+                // const blobStream = blob.createWriteStream();
+                // blobStream.on("finish", () => {
+                //     url = url + fileName;
+                //     console.log("Success");
+                // });
+                // blobStream.on("error", (error) => {
+                //     console.log("error ", error.message );
+                // });
+                // blobStream.end(image.buffer);
             }
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
