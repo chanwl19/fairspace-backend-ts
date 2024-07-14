@@ -113,10 +113,10 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
                 });
                 console.log("Success ", result );
             } catch {
-                console.log("error " ,errors )
+                console.log("Error")    
             }
             
-            console.log(result);
+            
             // const blob = bucket.file(fileName);
             // const blobStream = blob.createWriteStream();
 
