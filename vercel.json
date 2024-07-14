@@ -18,7 +18,7 @@
         }
     ],
     "functions": { 
-        "src/**/*": { 
+        "src/services/userService.ts": { 
             "maxDuration": 40 
         }
     }
