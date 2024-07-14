@@ -102,7 +102,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = uuidv4() + '.' + extension;
-            bucket.upload(fileName, {
+            bucket.upload(image.path, {
                 destination: fileName,
             }, function (err, file) {
                 if (err) {
