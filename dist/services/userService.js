@@ -18,6 +18,7 @@ const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
 const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
+const uuid_1 = require("uuid");
 const storage_1 = require("@google-cloud/storage");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -101,28 +102,16 @@ function updateUser(phoneNo, image, idKey) {
             }
             ;
             if (image) {
-                // const extArray = image.mimetype.split("/");
-                // const extension = extArray[extArray.length - 1];
-                // const fileName = uuidv4() + '.' + extension;
+                const extArray = image.mimetype.split("/");
+                const extension = extArray[extArray.length - 1];
+                const fileName = (0, uuid_1.v4)() + '.' + extension;
+                url = url + fileName;
                 console.log("IN upload file");
                 console.log("path ", image.path);
                 console.log("originalname ", image.originalname);
                 console.log("mimetype ", image.mimetype);
-                try {
-                    const result = yield bucket.upload(image.path, {
-                        destination: image.originalname,
-                        predefinedAcl: 'publicRead', // Set the file to be publicly readable
-                        metadata: {
-                            contentType: "application/plain", // Adjust the content type as needed
-                        }
-                    });
-                    console.log("Success ", result);
-                }
-                catch (_a) {
-                    console.log("Error");
-                }
-                // const blob = bucket.file(fileName);
-                // const blobStream = blob.createWriteStream();
+                const blob = bucket.file(fileName);
+                const blobStream = blob.createWriteStream();
                 // blobStream.on("finish", () => {
                 //     url = url + fileName;
                 //     console.log("Success");
@@ -140,7 +129,7 @@ function updateUser(phoneNo, image, idKey) {
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";
         }
-        catch (_b) {
+        catch (_a) {
             updateReturn.errorCode = 500;
             updateReturn.errorMessage = 'Error Occurs';
             return updateReturn;
