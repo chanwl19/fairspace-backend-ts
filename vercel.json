@@ -18,8 +18,8 @@
         }
     ],
     "functions": {
-        "src/services/*": {
-            "maxDuration": 60
+        "src/**/*": {
+            "maxDuration": 30
         }
     }
 }
