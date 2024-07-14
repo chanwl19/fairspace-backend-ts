@@ -19,7 +19,6 @@ const fileUpload = multer({
     fileSize: 5 * 1024 * 1024,
   },
   fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-    console.log("In multer storage fileFilter");
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
     if (isValid) {
       cb(null, true);

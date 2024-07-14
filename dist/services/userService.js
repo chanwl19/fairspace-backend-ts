@@ -105,14 +105,20 @@ function updateUser(phoneNo, image, idKey) {
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
-                const result = yield bucket.upload(fileName, {
-                    destination: fileName,
-                    predefinedAcl: 'publicRead', // Set the file to be publicly readable
-                    metadata: {
-                        contentType: "application/plain", // Adjust the content type as needed
-                    }
-                });
-                console.log(result);
+                console.log("IN upload file");
+                try {
+                    const result = yield bucket.upload(fileName, {
+                        destination: fileName,
+                        predefinedAcl: 'publicRead', // Set the file to be publicly readable
+                        metadata: {
+                            contentType: "application/plain", // Adjust the content type as needed
+                        }
+                    });
+                    console.log("Success ", result);
+                }
+                catch (_a) {
+                    console.log("Error");
+                }
                 // const blob = bucket.file(fileName);
                 // const blobStream = blob.createWriteStream();
                 // blobStream.on("finish", () => {
@@ -132,7 +138,7 @@ function updateUser(phoneNo, image, idKey) {
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";
         }
-        catch (_a) {
+        catch (_b) {
             updateReturn.errorCode = 500;
             updateReturn.errorMessage = 'Error Occurs';
             return updateReturn;
