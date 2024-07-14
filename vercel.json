@@ -16,10 +16,5 @@
             "src": "/(.*)",
             "dest": "dist/index.js"
         }
-    ],
-    "functions": { 
-        "api/services/*": { 
-            "maxDuration": 40 
-        }
-    }
+    ]
 }
