@@ -2,10 +2,12 @@ import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
 import { encrypt } from '../middlewares/encryptText';
-import dotenv from 'dotenv';
+import getGCPCredentials from '../middlewares/gcpCredentials';
 import { v4 as uuidv4 } from 'uuid';
 import { Storage } from '@google-cloud/storage';
-import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 interface BasicReturn {
     errorCode: number;
@@ -80,8 +82,7 @@ export async function getUser(userId: string): Promise<UserReturn> {
 }
 
 export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    const googleKeyFilePath = path.join(process.cwd(), 'src/keyfolder/googlekey.json');
-    const storage = new Storage({ keyFilename: googleKeyFilePath, projectId: process.env.GOOGLE_PROJECT_ID });
+    const storage = new Storage(getGCPCredentials());
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const updateReturn: BasicReturn = {
         errorCode: 500,

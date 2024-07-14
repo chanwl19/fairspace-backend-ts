@@ -17,9 +17,11 @@ const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
+const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
 const uuid_1 = require("uuid");
 const storage_1 = require("@google-cloud/storage");
-const path_1 = __importDefault(require("path"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
@@ -84,8 +86,7 @@ function getUser(userId) {
 exports.getUser = getUser;
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const googleKeyFilePath = path_1.default.join(process.cwd(), 'src/keyfolder/googlekey.json');
-        const storage = new storage_1.Storage({ keyFilename: googleKeyFilePath, projectId: process.env.GOOGLE_PROJECT_ID });
+        const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
         const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         const updateReturn = {
             errorCode: 500,
