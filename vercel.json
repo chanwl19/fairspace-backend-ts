@@ -18,7 +18,7 @@
         }
     ],
     "functions": { 
-        "src/services/userService.ts": { 
+        "api/services/userService.ts": { 
             "maxDuration": 40 
         }
     }
