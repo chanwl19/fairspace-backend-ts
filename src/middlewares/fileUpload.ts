@@ -1,9 +1,9 @@
 import multer, { FileFilterCallback } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from "express";
-import path from "path";
-// import { Storage } from "@google-cloud/storage"
 import dotenv from 'dotenv';
+import getGCPCredentials from '../middlewares/gcpCredentials';
+import { Storage } from '@google-cloud/storage';
 
 dotenv.config();
 
@@ -29,6 +29,34 @@ const fileUpload = multer({
     }
   }
 });
+
+export async function syncFile(image: Express.Multer.File): Promise<string> {
+  try {
+    const storage = new Storage(getGCPCredentials());
+    const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+    const extArray = image.mimetype.split("/");
+    const extension = extArray[extArray.length - 1];
+    const fileName = uuidv4() + '.' + extension;
+    const blob = bucket.file(fileName);
+    const blobStream = blob.createWriteStream();
+    console.log("file start to upload");
+    return new Promise((resolve, reject) => {
+      console.log("File completed")
+      blobStream.end(image.buffer);
+      blobStream.on("finish", () => resolve(fileName));
+      blobStream.on("error", reject);
+      blobStream.end(image.buffer);
+    });
+    // blobStream.on("success", () => {return Promise.resolve(fileName)} );
+    // blobStream.on("error", () => {
+    //   return Promise.resolve("");
+    // });
+    // return Promise.resolve("");
+  } catch {
+    console.log("Error ");
+    return Promise.resolve("");
+  }
+}
 
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file
 // const bucketName = process.env.BUCKET_NAME;

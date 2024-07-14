@@ -18,9 +18,9 @@ const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
 const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
-const uuid_1 = require("uuid");
 const storage_1 = require("@google-cloud/storage");
 const dotenv_1 = __importDefault(require("dotenv"));
+const fileUpload_1 = require("../middlewares/fileUpload");
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -102,23 +102,25 @@ function updateUser(phoneNo, image, idKey) {
             }
             ;
             if (image) {
-                const extArray = image.mimetype.split("/");
-                const extension = extArray[extArray.length - 1];
-                const fileName = (0, uuid_1.v4)() + '.' + extension;
+                const fileName = yield (0, fileUpload_1.syncFile)(image);
                 url = url + fileName;
-                console.log("IN upload file");
-                console.log("originalname ", image.originalname);
-                console.log("mimetype ", image.mimetype);
-                const blob = bucket.file(fileName);
-                const blobStream = blob.createWriteStream();
-                blobStream.on("finish", () => {
-                    url = url + fileName;
-                    console.log("Success");
-                });
-                blobStream.on("error", (error) => {
-                    console.log("error ", error.message);
-                });
-                blobStream.end(image.buffer);
+                // const extArray = image.mimetype.split("/");
+                // const extension = extArray[extArray.length - 1];
+                // const fileName = uuidv4() + '.' + extension;
+                // url = url+ fileName;
+                // console.log("IN upload file");
+                // console.log("originalname " , image.originalname);
+                // console.log("mimetype " , image.mimetype);
+                // const blob = bucket.file(fileName);
+                // const blobStream = blob.createWriteStream();
+                // blobStream.on("finish", () => {
+                //      url = url + fileName;
+                //      console.log("Success");
+                // });
+                // blobStream.on("error", (error) => {
+                //     console.log("error ", error.message );
+                // });
+                // blobStream.end(image.buffer);
             }
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);

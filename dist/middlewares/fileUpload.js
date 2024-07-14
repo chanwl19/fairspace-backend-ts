@@ -1,11 +1,23 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.syncFile = void 0;
 const multer_1 = __importDefault(require("multer"));
-// import { Storage } from "@google-cloud/storage"
+const uuid_1 = require("uuid");
 const dotenv_1 = __importDefault(require("dotenv"));
+const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
+const storage_1 = require("@google-cloud/storage");
 dotenv_1.default.config();
 const MIME_TYPE_MAP = {
     'image/png': 'png',
@@ -27,6 +39,37 @@ const fileUpload = (0, multer_1.default)({
         }
     }
 });
+function syncFile(image) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
+            const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+            const extArray = image.mimetype.split("/");
+            const extension = extArray[extArray.length - 1];
+            const fileName = (0, uuid_1.v4)() + '.' + extension;
+            const blob = bucket.file(fileName);
+            const blobStream = blob.createWriteStream();
+            console.log("file start to upload");
+            return new Promise((resolve, reject) => {
+                console.log("File completed");
+                blobStream.end(image.buffer);
+                blobStream.on("finish", () => resolve(fileName));
+                blobStream.on("error", reject);
+                blobStream.end(image.buffer);
+            });
+            // blobStream.on("success", () => {return Promise.resolve(fileName)} );
+            // blobStream.on("error", () => {
+            //   return Promise.resolve("");
+            // });
+            // return Promise.resolve("");
+        }
+        catch (_a) {
+            console.log("Error ");
+            return Promise.resolve("");
+        }
+    });
+}
+exports.syncFile = syncFile;
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file
 // const bucketName = process.env.BUCKET_NAME;
 // const keyFilename = process.env.GOOGLE_CLOUD_KEY_FILE;

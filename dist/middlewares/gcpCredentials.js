@@ -7,7 +7,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 function getGCPCredentials() {
     var _a;
-    // for Vercel, use environment variables
     return process.env.GCP_PRIVATE_KEY
         ? {
             credentials: {

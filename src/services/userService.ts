@@ -6,6 +6,7 @@ import getGCPCredentials from '../middlewares/gcpCredentials';
 import { v4 as uuidv4 } from 'uuid';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
+import { syncFile } from '../middlewares/fileUpload';
 
 dotenv.config();
 
@@ -99,24 +100,26 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         };
 
         if (image) {
-            const extArray = image.mimetype.split("/");
-            const extension = extArray[extArray.length - 1];
-            const fileName = uuidv4() + '.' + extension;
-            url = url+ fileName;
-            console.log("IN upload file");
-            console.log("originalname " , image.originalname);
-            console.log("mimetype " , image.mimetype);
-            const blob = bucket.file(fileName);
-            const blobStream = blob.createWriteStream();
+            const fileName = await syncFile(image);
+            url = url + fileName;
+            // const extArray = image.mimetype.split("/");
+            // const extension = extArray[extArray.length - 1];
+            // const fileName = uuidv4() + '.' + extension;
+            // url = url+ fileName;
+            // console.log("IN upload file");
+            // console.log("originalname " , image.originalname);
+            // console.log("mimetype " , image.mimetype);
+            // const blob = bucket.file(fileName);
+            // const blobStream = blob.createWriteStream();
 
-            blobStream.on("finish", () => {
-                 url = url + fileName;
-                 console.log("Success");
-            });
-            blobStream.on("error", (error) => {
-                console.log("error ", error.message );
-            });
-            blobStream.end(image.buffer);
+            // blobStream.on("finish", () => {
+            //      url = url + fileName;
+            //      console.log("Success");
+            // });
+            // blobStream.on("error", (error) => {
+            //     console.log("error ", error.message );
+            // });
+            // blobStream.end(image.buffer);
         }
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);

@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default function getGCPCredentials(){
-    // for Vercel, use environment variables
     return process.env.GCP_PRIVATE_KEY
       ? {
           credentials: {
