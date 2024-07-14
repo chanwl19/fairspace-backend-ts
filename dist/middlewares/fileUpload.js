@@ -51,7 +51,7 @@ function syncFile(image) {
             const blobStream = blob.createWriteStream();
             console.log("file start to upload");
             return new Promise((resolve, reject) => {
-                console.log("File completed sync again");
+                console.log("File completed sync again!!!");
                 blobStream.end(image.buffer);
                 blobStream.on("finish", () => resolve(fileName));
                 blobStream.on("error", reject);
