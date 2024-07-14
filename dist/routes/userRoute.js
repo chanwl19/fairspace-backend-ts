@@ -26,12 +26,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dynamic = exports.maxDuration = void 0;
 const express_1 = require("express");
 const userController = __importStar(require("../controllers/userController"));
 const fileUpload_1 = __importDefault(require("../middlewares/fileUpload"));
-exports.maxDuration = 40;
-exports.dynamic = 'force-dynamic';
 const userRoute = (0, express_1.Router)();
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
