@@ -16,5 +16,10 @@
             "src": "/(.*)",
             "dest": "dist/index.js"
         }
-    ]
+    ],
+    "functions": { 
+        "app/**/*": { 
+            "maxDuration": 40 
+        }
+    }
 }
