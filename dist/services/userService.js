@@ -105,7 +105,7 @@ function updateUser(phoneNo, image, idKey) {
                 const extArray = image.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
-                bucket.upload(image.path, {
+                bucket.upload(image.path.toString(), {
                     destination: fileName,
                 }, function (err, file) {
                     if (err) {
