@@ -17,7 +17,8 @@ const fileUpload = (0, multer_1.default)({
     // storage: multer.memoryStorage(),
     storage: multer_1.default.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, path_1.default.resolve(__dirname, 'images'));
+            console.log("In multer storage distination");
+            cb(null, path_1.default.resolve(__dirname, 'uploads/images'));
         },
         filename: (req, file, cb) => {
             console.log("In multer storage filename");
