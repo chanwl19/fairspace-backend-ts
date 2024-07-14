@@ -107,19 +107,18 @@ function updateUser(phoneNo, image, idKey) {
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
                 url = url + fileName;
                 console.log("IN upload file");
-                console.log("path ", image.path);
                 console.log("originalname ", image.originalname);
                 console.log("mimetype ", image.mimetype);
                 const blob = bucket.file(fileName);
                 const blobStream = blob.createWriteStream();
-                // blobStream.on("finish", () => {
-                //     url = url + fileName;
-                //     console.log("Success");
-                // });
-                // blobStream.on("error", (error) => {
-                //     console.log("error ", error.message );
-                // });
-                // blobStream.end(image.buffer);
+                blobStream.on("finish", () => {
+                    url = url + fileName;
+                    console.log("Success");
+                });
+                blobStream.on("error", (error) => {
+                    console.log("error ", error.message);
+                });
+                blobStream.end(image.buffer);
             }
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
