@@ -8,7 +8,7 @@
                     "dist/**"
                 ],
                 "functions": {
-                    "src/**/*": {
+                    "dist/**/*": {
                         "maxDuration": 30
                     }
                 }
