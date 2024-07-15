@@ -1,7 +1,7 @@
 {
     "version": 2,
     "functions": {
-        "services/*": {
+        "api/services/*": {
             "maxDuration": 60
         }
     },
