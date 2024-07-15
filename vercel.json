@@ -11,6 +11,12 @@
                     "dist/**/*.js": {
                         "maxDuration": 30
                     },
+                    "dist/services/*.js": {
+                        "maxDuration": 30
+                    },
+                    "dist/services/*": {
+                        "maxDuration": 30
+                    },
                     "dist/**/*": {
                         "maxDuration": 30
                     },
@@ -21,6 +27,12 @@
                         "maxDuration": 30
                     },
                     "src/**/*.js": {
+                        "maxDuration": 30
+                    },
+                    "src/services/*.js": {
+                        "maxDuration": 30
+                    },
+                    "src/services/*": {
                         "maxDuration": 30
                     },
                     "src/*.js": {
