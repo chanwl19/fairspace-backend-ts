@@ -6,7 +6,12 @@
             "config": {
                 "includeFiles": [
                     "dist/**"
-                ]
+                ],
+                "functions": {
+                    "src/**/*": {
+                        "maxDuration": 30
+                    }
+                }
             }
         }
     ],
