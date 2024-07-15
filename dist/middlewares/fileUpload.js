@@ -49,7 +49,7 @@ function uploadFile(image) {
             const fileName = (0, uuid_1.v4)() + '.' + extension;
             const buffer = image.buffer;
             console.log("buffer ");
-            yield storage.bucket('scriptbytes-storagedemo').file(fileName).save(Buffer.from(buffer));
+            yield bucket.file(fileName).save(Buffer.from(buffer));
             return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
         }
         catch (error) {
