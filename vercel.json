@@ -10,6 +10,21 @@
                 "functions": {
                     "dist/**/*.js": {
                         "maxDuration": 30
+                    },
+                    "dist/**/*": {
+                        "maxDuration": 30
+                    },
+                    "dist/*": {
+                        "maxDuration": 30
+                    },
+                    "dist/index.js": {
+                        "maxDuration": 30
+                    },
+                    "src/**/*.js": {
+                        "maxDuration": 30
+                    },
+                    "src/*.js": {
+                        "maxDuration": 30
                     }
                 }
             }
