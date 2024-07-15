@@ -1,7 +1,7 @@
 {
     "version": 2,
     "functions": {
-        "src/**/*": {
+        "services/*": {
             "maxDuration": 60
         }
     },
