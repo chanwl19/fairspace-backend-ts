@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFile = exports.fileHandler = void 0;
+exports.uploadFile = exports.fileHandler = exports.maxDuration = void 0;
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const dotenv_1 = __importDefault(require("dotenv"));
 const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
 const storage_1 = require("@google-cloud/storage");
 dotenv_1.default.config();
+exports.maxDuration = 30;
 const MIME_TYPE_MAP = {
     'image/png': 'png',
     'image/jpeg': 'jpeg',

@@ -7,6 +7,8 @@ import { Storage } from '@google-cloud/storage';
 
 dotenv.config();
 
+export const maxDuration = 30;
+
 const MIME_TYPE_MAP: { [index: string]: string } = {
   'image/png': 'png',
   'image/jpeg': 'jpeg',
