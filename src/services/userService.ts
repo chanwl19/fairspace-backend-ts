@@ -18,6 +18,8 @@ interface UserReturn extends BasicReturn {
     user: InstanceType<typeof User>;
 }
 
+export const maxDuration = 30;
+
 export async function signup(userId: string, password: string, email: string, roleIds: number[]): Promise<BasicReturn> {
     const signupReturn: BasicReturn = {
         errorCode: 500,

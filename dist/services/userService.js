@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.signup = void 0;
+exports.updateUser = exports.getUser = exports.signup = exports.maxDuration = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
@@ -22,6 +22,7 @@ const storage_1 = require("@google-cloud/storage");
 const dotenv_1 = __importDefault(require("dotenv"));
 const fileUpload_1 = require("../middlewares/fileUpload");
 dotenv_1.default.config();
+exports.maxDuration = 30;
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
