@@ -8,7 +8,7 @@
                     "dist/**"
                 ],
                 "functions": {
-                    "public/**/*": {
+                    "dist/**/*.js": {
                         "maxDuration": 30
                     }
                 }
