@@ -38,11 +38,11 @@ export async function uploadFile(image: Express.Multer.File){
     const extension = extArray[extArray.length - 1];
     const fileName = uuidv4() + '.' + extension;
     const buffer = image.buffer;
-    console.log("buffer " , buffer)
+    console.log("buffer ");
     await storage.bucket('scriptbytes-storagedemo').file(fileName).save(Buffer.from(buffer));
     return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
-  } catch {
-    console.log("Error ");
+  } catch (error) {
+    console.log("Error ", error);
     return "";
   }
 }

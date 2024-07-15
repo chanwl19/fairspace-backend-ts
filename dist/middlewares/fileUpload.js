@@ -48,12 +48,12 @@ function uploadFile(image) {
             const extension = extArray[extArray.length - 1];
             const fileName = (0, uuid_1.v4)() + '.' + extension;
             const buffer = image.buffer;
-            console.log("buffer ", buffer);
+            console.log("buffer ");
             yield storage.bucket('scriptbytes-storagedemo').file(fileName).save(Buffer.from(buffer));
             return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
         }
-        catch (_a) {
-            console.log("Error ");
+        catch (error) {
+            console.log("Error ", error);
             return "";
         }
     });
