@@ -1,13 +1,39 @@
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/api/server.js"
-      }
+    "builds": [
+        {
+            "src": "dist/index.js",
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": [
+                    "dist/**"
+                ],
+                "functions": {
+                    "dist/**/*.js": {
+                        "maxDuration": 30
+                    },
+                    "dist/**/*": {
+                        "maxDuration": 30
+                    },
+                    "dist/*": {
+                        "maxDuration": 30
+                    },
+                    "dist/index.js": {
+                        "maxDuration": 30
+                    },
+                    "src/**/*.js": {
+                        "maxDuration": 30
+                    },
+                    "src/*.js": {
+                        "maxDuration": 30
+                    }
+                }
+            }
+        }
     ],
-    "functions": {
-      "api/server.js": {
-        "maxDuration": 30
-      }
-    }
-   }
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "dist/index.js"
+        }
+    ]
+}

@@ -3,6 +3,11 @@ import { body, check, validationResult } from 'express-validator';
 import { ApiError } from '../models/apiError';
 import * as userService from '../services/userService';
 
+
+export const config = {
+    maxDuration: 30
+  };
+
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     await check("userId", "userId cannot be blank").isLength({min: 9, max: 9}).run(req);
     await check("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);

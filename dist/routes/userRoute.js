@@ -23,10 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.dynamic = exports.maxDuration = void 0;
 const express_1 = require("express");
 const userController = __importStar(require("../controllers/userController"));
 const fileUpload_1 = require("../middlewares/fileUpload");
 const userRoute = (0, express_1.Router)();
+exports.maxDuration = 30;
+exports.dynamic = 'force-dynamic';
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)

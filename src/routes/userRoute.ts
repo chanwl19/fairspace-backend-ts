@@ -4,6 +4,9 @@ import { fileHandler } from "../middlewares/fileUpload";
 
 const userRoute: Router = Router();
 
+export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)
