@@ -1,24 +1,16 @@
 {
-    "builds": [
-        {
-            "src": "dist/index.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "dist/**"
-                ],
-                "functions": {
-                    "dist/**/*": {
-                        "maxDuration": 30
-                    }
-                }
-            }
+    "functions": {
+        "src/**/*": {
+          "maxDuration": 60
         }
-    ],
-    "routes": [
+      },
+      "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "dist/index.js"
+          "source": "/(.*)",
+          "destination": "dist/index.js"
         }
-    ]
+      ]
 }
+
+
+
