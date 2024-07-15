@@ -102,8 +102,9 @@ function updateUser(phoneNo, image, idKey) {
             }
             ;
             if (image) {
-                const fileName = yield (0, fileUpload_1.syncFile)(image);
-                url = url + fileName;
+                const url = yield (0, fileUpload_1.uploadFile)(image);
+                // const fileName = await syncFile(image);
+                // url = url + fileName;
                 // const extArray = image.mimetype.split("/");
                 // const extension = extArray[extArray.length - 1];
                 // const fileName = uuidv4() + '.' + extension;

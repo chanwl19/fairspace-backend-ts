@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncFile = void 0;
+exports.uploadFile = exports.fileHandler = void 0;
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -24,7 +24,7 @@ const MIME_TYPE_MAP = {
     'image/jpeg': 'jpeg',
     'image/jpg': 'jpg'
 };
-const fileUpload = (0, multer_1.default)({
+exports.fileHandler = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024,
@@ -39,7 +39,7 @@ const fileUpload = (0, multer_1.default)({
         }
     }
 });
-function syncFile(image) {
+function uploadFile(image) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
@@ -47,28 +47,18 @@ function syncFile(image) {
             const extArray = image.mimetype.split("/");
             const extension = extArray[extArray.length - 1];
             const fileName = (0, uuid_1.v4)() + '.' + extension;
-            const blob = bucket.file(fileName);
-            const blobStream = blob.createWriteStream();
-            console.log("file start to upload");
-            return new Promise((resolve, reject) => {
-                console.log("File completed sync again!!!");
-                blobStream.end(image.buffer);
-                blobStream.on("finish", () => resolve(fileName));
-                blobStream.on("error", reject);
-            });
-            // blobStream.on("success", () => {return Promise.resolve(fileName)} );
-            // blobStream.on("error", () => {
-            //   return Promise.resolve("");
-            // });
-            // return Promise.resolve("");
+            const buffer = image.buffer;
+            console.log("buffer ", buffer);
+            yield storage.bucket('scriptbytes-storagedemo').file(fileName).save(Buffer.from(buffer));
+            return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
         }
         catch (_a) {
             console.log("Error ");
-            return Promise.resolve("");
+            return "";
         }
     });
 }
-exports.syncFile = syncFile;
+exports.uploadFile = uploadFile;
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file
 // const bucketName = process.env.BUCKET_NAME;
 // const keyFilename = process.env.GOOGLE_CLOUD_KEY_FILE;
@@ -136,4 +126,3 @@ exports.syncFile = syncFile;
 //         }
 //     }
 // });
-exports.default = fileUpload;

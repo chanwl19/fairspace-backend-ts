@@ -3,10 +3,9 @@ import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
 import { encrypt } from '../middlewares/encryptText';
 import getGCPCredentials from '../middlewares/gcpCredentials';
-import { v4 as uuidv4 } from 'uuid';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
-import { syncFile } from '../middlewares/fileUpload';
+import { uploadFile } from '../middlewares/fileUpload';
 
 dotenv.config();
 
@@ -100,8 +99,9 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         };
 
         if (image) {
-            const fileName = await syncFile(image);
-            url = url + fileName;
+            const url = await uploadFile(image);
+            // const fileName = await syncFile(image);
+            // url = url + fileName;
             // const extArray = image.mimetype.split("/");
             // const extension = extArray[extArray.length - 1];
             // const fileName = uuidv4() + '.' + extension;

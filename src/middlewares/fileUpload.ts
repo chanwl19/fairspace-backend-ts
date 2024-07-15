@@ -15,7 +15,7 @@ const MIME_TYPE_MAP: { [index: string]: string } = {
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 
-const fileUpload = multer({
+export const fileHandler = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024,
@@ -30,30 +30,20 @@ const fileUpload = multer({
   }
 });
 
-export async function syncFile(image: Express.Multer.File): Promise<string> {
+export async function uploadFile(image: Express.Multer.File){
   try {
     const storage = new Storage(getGCPCredentials());
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const extArray = image.mimetype.split("/");
     const extension = extArray[extArray.length - 1];
     const fileName = uuidv4() + '.' + extension;
-    const blob = bucket.file(fileName);
-    const blobStream = blob.createWriteStream();
-    console.log("file start to upload");
-    return new Promise((resolve, reject) => {
-      console.log("File completed sync again!!!")
-      blobStream.end(image.buffer);
-      blobStream.on("finish", () => resolve(fileName));
-      blobStream.on("error", reject);
-    });
-    // blobStream.on("success", () => {return Promise.resolve(fileName)} );
-    // blobStream.on("error", () => {
-    //   return Promise.resolve("");
-    // });
-    // return Promise.resolve("");
+    const buffer = image.buffer;
+    console.log("buffer " , buffer)
+    await storage.bucket('scriptbytes-storagedemo').file(fileName).save(Buffer.from(buffer));
+    return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
   } catch {
     console.log("Error ");
-    return Promise.resolve("");
+    return "";
   }
 }
 
@@ -137,7 +127,5 @@ export async function syncFile(image: Express.Multer.File): Promise<string> {
 //         }
 //     }
 // });
-
-export default fileUpload;
 
 

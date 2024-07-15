@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as userController from '../controllers/userController';
-import fileUpload from "../middlewares/fileUpload";
+import { fileHandler } from "../middlewares/fileUpload";
 
 const userRoute: Router = Router();
 
@@ -8,7 +8,7 @@ const userRoute: Router = Router();
 userRoute.route('/')
     .post(userController.signup)
     .get(userController.getUser)
-    .patch(fileUpload.single('image'), userController.updateUser);
+    .patch(fileHandler.single('image'), userController.updateUser);
 
 
 
