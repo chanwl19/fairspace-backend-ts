@@ -56,7 +56,7 @@ export async function uploadImage(file: Express.Multer.File) {
   if (file) {
     console.log("file upload")
     const imageFile = fs.createReadStream(file.path);
-    blob = await put(file.filename, imageFile, {
+    blob = await put("profile/" + file.filename, imageFile, {
       access: 'public',
     });
     console.log("blob ", blob)
