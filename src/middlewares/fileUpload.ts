@@ -55,11 +55,16 @@ export async function uploadImage(file: Express.Multer.File) {
   let blob;
   if (file) {
     console.log("file upload")
-    const imageFile = fs.createReadStream(file.path);
+    try {
+      const imageFile = fs.createReadStream(file.path);
+      blob = await put("profile/" + file.filename, imageFile, {
+        access: 'public',
+      });
+    } catch (err) {
+      console.log('error ', err);
+    }
     console.log("file streamed")
-    blob = await put("profile/" + file.filename, imageFile, {
-      access: 'public',
-    });
+
     console.log("blob ", blob)
   }
   return blob;

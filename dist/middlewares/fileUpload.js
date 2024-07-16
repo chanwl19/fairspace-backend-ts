@@ -67,11 +67,16 @@ function uploadImage(file) {
         let blob;
         if (file) {
             console.log("file upload");
-            const imageFile = fs_1.default.createReadStream(file.path);
+            try {
+                const imageFile = fs_1.default.createReadStream(file.path);
+                blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
+                    access: 'public',
+                });
+            }
+            catch (err) {
+                console.log('error ', err);
+            }
             console.log("file streamed");
-            blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
-                access: 'public',
-            });
             console.log("blob ", blob);
         }
         return blob;
