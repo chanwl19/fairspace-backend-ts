@@ -32,13 +32,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.signup = exports.config = void 0;
+exports.updateUser = exports.getUser = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const apiError_1 = require("../models/apiError");
 const userService = __importStar(require("../services/userService"));
-exports.config = {
-    maxDuration: 30
-};
 function signup(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);

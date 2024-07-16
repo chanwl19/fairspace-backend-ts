@@ -12,17 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.signup = exports.maxDuration = void 0;
+exports.updateUser = exports.getUser = exports.signup = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
-const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
-const storage_1 = require("@google-cloud/storage");
 const dotenv_1 = __importDefault(require("dotenv"));
 const fileUpload_1 = require("../middlewares/fileUpload");
 dotenv_1.default.config();
-exports.maxDuration = 30;
 function signup(userId, password, email, roleIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
@@ -85,49 +82,53 @@ function getUser(userId) {
     });
 }
 exports.getUser = getUser;
+//export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
-        const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+        // const storage = new Storage(getGCPCredentials());
+        // const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
         try {
             const user = yield user_1.User.findById(idKey);
-            let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
+            // let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
             if (!user) {
                 updateReturn.errorCode = 404;
                 updateReturn.errorMessage = 'User not found';
                 return updateReturn;
             }
             ;
-            if (image) {
-                const url = yield (0, fileUpload_1.uploadFile)(image);
-                // const fileName = await syncFile(image);
-                // url = url + fileName;
-                // const extArray = image.mimetype.split("/");
-                // const extension = extArray[extArray.length - 1];
-                // const fileName = uuidv4() + '.' + extension;
-                // url = url+ fileName;
-                // console.log("IN upload file");
-                // console.log("originalname " , image.originalname);
-                // console.log("mimetype " , image.mimetype);
-                // const blob = bucket.file(fileName);
-                // const blobStream = blob.createWriteStream();
-                // blobStream.on("finish", () => {
-                //      url = url + fileName;
-                //      console.log("Success");
-                // });
-                // blobStream.on("error", (error) => {
-                //     console.log("error ", error.message );
-                // });
-                // blobStream.end(image.buffer);
-            }
+            // if (image) {
+            //     const url = await uploadFile(image);
+            // const fileName = await syncFile(image);
+            // url = url + fileName;
+            // const extArray = image.mimetype.split("/");
+            // const extension = extArray[extArray.length - 1];
+            // const fileName = uuidv4() + '.' + extension;
+            // url = url+ fileName;
+            // console.log("IN upload file");
+            // console.log("originalname " , image.originalname);
+            // console.log("mimetype " , image.mimetype);
+            // const blob = bucket.file(fileName);
+            // const blobStream = blob.createWriteStream();
+            // blobStream.on("finish", () => {
+            //      url = url + fileName;
+            //      console.log("Success");
+            // });
+            // blobStream.on("error", (error) => {
+            //     console.log("error ", error.message );
+            // });
+            // blobStream.end(image.buffer);
+            // }
+            console.log("Start to upload");
+            yield (0, fileUpload_1.uploadImage)(image);
+            console.log("End to upload");
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
             }
-            user.image = url;
+            //user.image = url;
             yield user.save();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";

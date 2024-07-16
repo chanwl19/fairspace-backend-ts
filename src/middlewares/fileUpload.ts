@@ -4,6 +4,8 @@ import { Request } from "express";
 import dotenv from 'dotenv';
 import getGCPCredentials from '../middlewares/gcpCredentials';
 import { Storage } from '@google-cloud/storage';
+import { put } from '@vercel/blob';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -32,7 +34,7 @@ export const fileHandler = multer({
   }
 });
 
-export async function uploadFile(image: Express.Multer.File){
+export async function uploadFile(image: Express.Multer.File) {
   try {
     const storage = new Storage(getGCPCredentials());
     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
@@ -47,6 +49,19 @@ export async function uploadFile(image: Express.Multer.File){
     console.log("Error ", error);
     return "";
   }
+}
+
+export async function uploadImage(file: Express.Multer.File) {
+  let blob;
+  if (file) {
+    console.log("file upload")
+    const imageFile = fs.createReadStream(file.path);
+    blob = await put(file.filename, imageFile, {
+      access: 'public',
+    });
+    console.log("blob ", blob)
+  }
+  return blob;
 }
 
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file

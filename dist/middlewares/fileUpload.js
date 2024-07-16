@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFile = exports.fileHandler = exports.maxDuration = void 0;
+exports.uploadImage = exports.uploadFile = exports.fileHandler = exports.maxDuration = void 0;
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const dotenv_1 = __importDefault(require("dotenv"));
 const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
 const storage_1 = require("@google-cloud/storage");
+const blob_1 = require("@vercel/blob");
+const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
 exports.maxDuration = 30;
 const MIME_TYPE_MAP = {
@@ -60,6 +62,21 @@ function uploadFile(image) {
     });
 }
 exports.uploadFile = uploadFile;
+function uploadImage(file) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let blob;
+        if (file) {
+            console.log("file upload");
+            const imageFile = fs_1.default.createReadStream(file.path);
+            blob = yield (0, blob_1.put)(file.filename, imageFile, {
+                access: 'public',
+            });
+            console.log("blob ", blob);
+        }
+        return blob;
+    });
+}
+exports.uploadImage = uploadImage;
 // // Get the 'PROJECT_ID' and 'KEYFILENAME' environment variables from the .env file
 // const bucketName = process.env.BUCKET_NAME;
 // const keyFilename = process.env.GOOGLE_CLOUD_KEY_FILE;

@@ -5,7 +5,7 @@ import { encrypt } from '../middlewares/encryptText';
 import getGCPCredentials from '../middlewares/gcpCredentials';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
-import { uploadFile } from '../middlewares/fileUpload';
+import { uploadFile, uploadImage } from '../middlewares/fileUpload';
 
 dotenv.config();
 
@@ -17,8 +17,6 @@ interface BasicReturn {
 interface UserReturn extends BasicReturn {
     user: InstanceType<typeof User>;
 }
-
-export const maxDuration = 30;
 
 export async function signup(userId: string, password: string, email: string, roleIds: number[]): Promise<BasicReturn> {
     const signupReturn: BasicReturn = {
@@ -83,9 +81,10 @@ export async function getUser(userId: string): Promise<UserReturn> {
     return userReturn;
 }
 
-export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    const storage = new Storage(getGCPCredentials());
-    const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+//export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
+    export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
+    // const storage = new Storage(getGCPCredentials());
+    // const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -93,15 +92,15 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
 
     try {
         const user = await User.findById(idKey);
-        let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
+        // let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
         if (!user) {
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
 
-        if (image) {
-            const url = await uploadFile(image);
+        // if (image) {
+        //     const url = await uploadFile(image);
             // const fileName = await syncFile(image);
             // url = url + fileName;
             // const extArray = image.mimetype.split("/");
@@ -122,11 +121,14 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             //     console.log("error ", error.message );
             // });
             // blobStream.end(image.buffer);
-        }
+        // }
+        console.log("Start to upload")
+        await uploadImage(image);
+        console.log("End to upload")
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
         }
-        user.image = url;
+        //user.image = url;
         await user.save();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
