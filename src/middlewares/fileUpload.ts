@@ -56,7 +56,9 @@ export async function uploadImage(file: Express.Multer.File) {
   if (file) {
     console.log("file upload")
     try {
-      const imageFile = fs.createReadStream(file.path.toString());
+      const imageFile = Buffer.from(file.buffer);
+      const storage = new Storage(getGCPCredentials());
+      let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
       blob = await put("profile/" + file.filename, imageFile, {
         access: 'public',
       });

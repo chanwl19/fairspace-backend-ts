@@ -19,7 +19,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const gcpCredentials_1 = __importDefault(require("../middlewares/gcpCredentials"));
 const storage_1 = require("@google-cloud/storage");
 const blob_1 = require("@vercel/blob");
-const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
 exports.maxDuration = 30;
 const MIME_TYPE_MAP = {
@@ -68,7 +67,9 @@ function uploadImage(file) {
         if (file) {
             console.log("file upload");
             try {
-                const imageFile = fs_1.default.createReadStream(file.path.toString());
+                const imageFile = Buffer.from(file.buffer);
+                const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
+                let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
                 blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
                     access: 'public',
                 });
