@@ -68,6 +68,7 @@ function uploadImage(file) {
         if (file) {
             console.log("file upload");
             const imageFile = fs_1.default.createReadStream(file.path);
+            console.log("file streamed");
             blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
                 access: 'public',
             });
