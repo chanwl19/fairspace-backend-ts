@@ -123,13 +123,14 @@ export async function getUser(userId: string): Promise<UserReturn> {
             // blobStream.end(image.buffer);
         // }
         console.log("Start to upload ", new Date().toLocaleString())
-        const blob = await uploadImage(image);
+        const blob = await uploadFile(image);
         console.log("End to upload ", new Date().toLocaleString())
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
         }
         console.log("Finisg encrpty at " , new Date().toLocaleString())
-        user.image = blob?.downloadUrl;
+        //user.image = blob?.downloadUrl;
+        user.image =blob;
         await user.save();
         console.log("Finisg save at " , new Date().toLocaleString())
         updateReturn.errorCode = 0;

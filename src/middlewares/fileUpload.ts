@@ -56,12 +56,11 @@ export async function uploadImage(file: Express.Multer.File) {
   if (file) {
     console.log("file upload at ", new Date().toLocaleString())
     try {
-      const imageFile = Buffer.from(file.buffer);
       console.log("Finish biuffer at ", new Date().toLocaleString())
       const extArray = file.mimetype.split("/");
       const extension = extArray[extArray.length - 1];
       const fileName = uuidv4() + '.' + extension;
-      blob = await put("profile/" + fileName, imageFile, {
+      blob = await put("profile/" + fileName, file.buffer, {
         access: 'public',
       });
       console.log("Finsih upload at ", new Date().toLocaleString())

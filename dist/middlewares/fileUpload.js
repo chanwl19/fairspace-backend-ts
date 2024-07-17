@@ -67,12 +67,11 @@ function uploadImage(file) {
         if (file) {
             console.log("file upload at ", new Date().toLocaleString());
             try {
-                const imageFile = Buffer.from(file.buffer);
                 console.log("Finish biuffer at ", new Date().toLocaleString());
                 const extArray = file.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
-                blob = yield (0, blob_1.put)("profile/" + fileName, imageFile, {
+                blob = yield (0, blob_1.put)("profile/" + fileName, file.buffer, {
                     access: 'public',
                 });
                 console.log("Finsih upload at ", new Date().toLocaleString());
