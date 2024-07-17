@@ -54,16 +54,18 @@ export async function uploadFile(image: Express.Multer.File) {
 export async function uploadImage(file: Express.Multer.File) {
   let blob;
   if (file) {
-    console.log("file upload")
+    console.log("file upload at ", new Date().toLocaleString())
     try {
       const imageFile = Buffer.from(file.buffer);
-      const storage = new Storage(getGCPCredentials());
-      let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+      console.log("Finish biuffer at ", new Date().toLocaleString())
+     // const storage = new Storage(getGCPCredentials());
+      //let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
       blob = await put("profile/" + file.filename, imageFile, {
         access: 'public',
       });
+      console.log("Finsih upload at ", new Date().toLocaleString())
     } catch (err) {
-      console.log('error ', err);
+      console.log('error ', err , ' at ' , new Date().toLocaleString());
     }
     console.log("file streamed")
 

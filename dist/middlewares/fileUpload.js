@@ -65,17 +65,19 @@ function uploadImage(file) {
     return __awaiter(this, void 0, void 0, function* () {
         let blob;
         if (file) {
-            console.log("file upload");
+            console.log("file upload at ", new Date().toLocaleString());
             try {
                 const imageFile = Buffer.from(file.buffer);
-                const storage = new storage_1.Storage((0, gcpCredentials_1.default)());
-                let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+                console.log("Finish biuffer at ", new Date().toLocaleString());
+                // const storage = new Storage(getGCPCredentials());
+                //let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
                 blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
                     access: 'public',
                 });
+                console.log("Finsih upload at ", new Date().toLocaleString());
             }
             catch (err) {
-                console.log('error ', err);
+                console.log('error ', err, ' at ', new Date().toLocaleString());
             }
             console.log("file streamed");
             console.log("blob ", blob);
