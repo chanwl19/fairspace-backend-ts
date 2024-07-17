@@ -69,12 +69,14 @@ function uploadImage(file) {
             try {
                 const imageFile = Buffer.from(file.buffer);
                 console.log("Finish biuffer at ", new Date().toLocaleString());
-                // const storage = new Storage(getGCPCredentials());
-                //let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-                blob = yield (0, blob_1.put)("profile/" + file.filename, imageFile, {
+                const extArray = file.mimetype.split("/");
+                const extension = extArray[extArray.length - 1];
+                const fileName = (0, uuid_1.v4)() + '.' + extension;
+                blob = yield (0, blob_1.put)("profile/" + fileName, imageFile, {
                     access: 'public',
                 });
                 console.log("Finsih upload at ", new Date().toLocaleString());
+                return blob;
             }
             catch (err) {
                 console.log('error ', err, ' at ', new Date().toLocaleString());

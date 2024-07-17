@@ -58,12 +58,14 @@ export async function uploadImage(file: Express.Multer.File) {
     try {
       const imageFile = Buffer.from(file.buffer);
       console.log("Finish biuffer at ", new Date().toLocaleString())
-     // const storage = new Storage(getGCPCredentials());
-      //let bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-      blob = await put("profile/" + file.filename, imageFile, {
+      const extArray = file.mimetype.split("/");
+      const extension = extArray[extArray.length - 1];
+      const fileName = uuidv4() + '.' + extension;
+      blob = await put("profile/" + fileName, imageFile, {
         access: 'public',
       });
       console.log("Finsih upload at ", new Date().toLocaleString())
+      return blob;
     } catch (err) {
       console.log('error ', err , ' at ' , new Date().toLocaleString());
     }
