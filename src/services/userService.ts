@@ -122,16 +122,19 @@ export async function getUser(userId: string): Promise<UserReturn> {
             // });
             // blobStream.end(image.buffer);
         // }
-        console.log("Start to upload")
+        console.log("Start to upload ", new Date().toLocaleString())
         await uploadImage(image);
-        console.log("End to upload")
+        console.log("End to upload ", new Date().toLocaleString())
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
         }
+        console.log("Finisg encrpty at " , new Date().toLocaleString())
         //user.image = url;
         await user.save();
+        console.log("Finisg save at " , new Date().toLocaleString())
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
+        return updateReturn
     } catch {
         updateReturn.errorCode = 500;
         updateReturn.errorMessage = 'Error Occurs';
