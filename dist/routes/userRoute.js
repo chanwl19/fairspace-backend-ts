@@ -30,6 +30,7 @@ const userRoute = (0, express_1.Router)();
 //post request to post (create), get (get) and put (update) user
 userRoute.route('/')
     .post(userController.signup)
-    .get(userController.getUser)
-    .patch(fileUpload_1.fileHandler.single('image'), userController.updateUser);
+    .get(userController.getUsers)
+    .patch(fileUpload_1.fileHandler.single('image'), userController.updateUser)
+    .delete(userController.deleteUser);
 exports.default = userRoute;

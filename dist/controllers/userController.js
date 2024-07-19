@@ -32,31 +32,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.signup = void 0;
+exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const apiError_1 = require("../models/apiError");
 const userService = __importStar(require("../services/userService"));
 function signup(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);
-        yield (0, express_validator_1.check)("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
-        yield (0, express_validator_1.check)("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
-        yield (0, express_validator_1.check)("roleIds", "Please select role").isArray({ min: 1 }).run(req);
-        yield (0, express_validator_1.check)("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
-        yield (0, express_validator_1.body)("email").normalizeEmail().run(req);
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return next(new apiError_1.ApiError('Validation failed.', 422, errors.array()));
+        try {
+            yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);
+            yield (0, express_validator_1.check)("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
+            yield (0, express_validator_1.check)("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+            yield (0, express_validator_1.check)("roleIds", "Please select role").isArray({ min: 1 }).run(req);
+            yield (0, express_validator_1.check)("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
+            yield (0, express_validator_1.body)("email").normalizeEmail().run(req);
+            const errors = (0, express_validator_1.validationResult)(req);
+            if (!errors.isEmpty()) {
+                return next(new apiError_1.ApiError('Validation failed.', 422, errors.array()));
+            }
+            const response = yield userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds);
+            if (response.errorCode !== 0) {
+                return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+            }
+            res.status(201).json({ 'message': 'user created' });
         }
-        const response = yield userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds);
-        if (response.errorCode !== 0) {
-            return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+        catch (_a) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
         }
-        res.status(201).json({ 'message': 'user created' });
     });
 }
 exports.signup = signup;
-function getUser(req, res, next) {
+function getUserById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
@@ -65,7 +70,7 @@ function getUser(req, res, next) {
                 return next(new apiError_1.ApiError("No user found", 404, []));
             }
             ;
-            const response = yield userService.getUser(userId);
+            const response = yield userService.getUserById(userId);
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }
@@ -76,12 +81,50 @@ function getUser(req, res, next) {
         }
     });
 }
-exports.getUser = getUser;
+exports.getUserById = getUserById;
+function getUsers(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield userService.getUsers();
+            if (response.errorCode !== 0) {
+                return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+            }
+            res.status(200).json({ 'users': response.users });
+        }
+        catch (_a) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+        }
+    });
+}
+exports.getUsers = getUsers;
 function updateUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const file = req.file;
-        const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id.toString());
-        res.status(201).json({ 'message': 'successfully update' });
+        try {
+            const file = req.file;
+            const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id.toString());
+            if (response.errorCode !== 0) {
+                return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+            }
+            res.status(201).json({ 'message': 'successfully update' });
+        }
+        catch (_a) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+        }
     });
 }
 exports.updateUser = updateUser;
+function deleteUser(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield userService.deleteUser(req.body.userId.toString());
+            if (response.errorCode !== 0) {
+                return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+            }
+            res.status(201).json({ 'message': 'successfully delete user' });
+        }
+        catch (_a) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+        }
+    });
+}
+exports.deleteUser = deleteUser;

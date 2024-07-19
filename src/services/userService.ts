@@ -18,6 +18,10 @@ interface UserReturn extends BasicReturn {
     user: InstanceType<typeof User>;
 }
 
+interface UsersReturn extends BasicReturn {
+    users: InstanceType<typeof User>[];
+}
+
 export async function signup(userId: string, password: string, email: string, roleIds: number[]): Promise<BasicReturn> {
     const signupReturn: BasicReturn = {
         errorCode: 500,
@@ -55,7 +59,7 @@ export async function signup(userId: string, password: string, email: string, ro
     return signupReturn;
 }
 
-export async function getUser(userId: string): Promise<UserReturn> {
+export async function getUserById(userId: string): Promise<UserReturn> {
 
     const userReturn: UserReturn = {
         user: new User(),
@@ -81,10 +85,29 @@ export async function getUser(userId: string): Promise<UserReturn> {
     return userReturn;
 }
 
-//export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
-    // const storage = new Storage(getGCPCredentials());
-    // const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+export async function getUsers(){
+
+    const usersReturn: UsersReturn = {
+        users: [],
+        errorCode: 500,
+        errorMessage: 'Error Occurs'
+    };
+
+    try {
+        const users = await User.find({}).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
+        usersReturn.users = users;
+        usersReturn.errorCode = 0;
+        usersReturn.errorMessage = "";
+    } catch {
+        usersReturn.errorCode = 500;
+        usersReturn.errorMessage = 'Error Occurs';
+        return usersReturn;
+    }
+    
+    return usersReturn;
+}
+
+export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -92,47 +115,19 @@ export async function getUser(userId: string): Promise<UserReturn> {
 
     try {
         const user = await User.findById(idKey);
-        // let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
         if (!user) {
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-
-        // if (image) {
-        //     const url = await uploadFile(image);
-            // const fileName = await syncFile(image);
-            // url = url + fileName;
-            // const extArray = image.mimetype.split("/");
-            // const extension = extArray[extArray.length - 1];
-            // const fileName = uuidv4() + '.' + extension;
-            // url = url+ fileName;
-            // console.log("IN upload file");
-            // console.log("originalname " , image.originalname);
-            // console.log("mimetype " , image.mimetype);
-            // const blob = bucket.file(fileName);
-            // const blobStream = blob.createWriteStream();
-
-            // blobStream.on("finish", () => {
-            //      url = url + fileName;
-            //      console.log("Success");
-            // });
-            // blobStream.on("error", (error) => {
-            //     console.log("error ", error.message );
-            // });
-            // blobStream.end(image.buffer);
-        // }
-        console.log("Start to upload ", new Date().toLocaleString())
-        const blob = await uploadImage(image);
-        console.log("End to upload ", new Date().toLocaleString())
+        if (image) {
+            const blob = await uploadImage(image);
+            user.image = blob?.downloadUrl;
+        }
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
         }
-        console.log("Finisg encrpty at " , new Date().toLocaleString())
-        user.image = blob?.downloadUrl;
-        //user.image =blob;
         await user.save();
-        console.log("Finisg save at " , new Date().toLocaleString())
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
         return updateReturn
@@ -145,3 +140,24 @@ export async function getUser(userId: string): Promise<UserReturn> {
     return updateReturn;
 }
 
+export async function deleteUser(userId: string): Promise<BasicReturn> {
+
+    const deleteReturn: BasicReturn = {
+        errorCode: 500,
+        errorMessage: 'Error Occurs'
+    };
+
+    try {
+        
+        await User.findByIdAndDelete(userId);
+        deleteReturn.errorCode = 0;
+        deleteReturn.errorMessage = "";
+        return deleteReturn
+    } catch {
+        deleteReturn.errorCode = 500;
+        deleteReturn.errorMessage = 'Error Occurs';
+        return deleteReturn;
+    }
+
+    return deleteReturn
+}

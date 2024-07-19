@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.signup = void 0;
+exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
@@ -55,7 +55,7 @@ function signup(userId, password, email, roleIds) {
     });
 }
 exports.signup = signup;
-function getUser(userId) {
+function getUserById(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const userReturn = {
             user: new user_1.User(),
@@ -81,58 +81,51 @@ function getUser(userId) {
         return userReturn;
     });
 }
-exports.getUser = getUser;
-//export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
+exports.getUserById = getUserById;
+function getUsers() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const usersReturn = {
+            users: [],
+            errorCode: 500,
+            errorMessage: 'Error Occurs'
+        };
+        try {
+            const users = yield user_1.User.find({}).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
+            usersReturn.users = users;
+            usersReturn.errorCode = 0;
+            usersReturn.errorMessage = "";
+        }
+        catch (_a) {
+            usersReturn.errorCode = 500;
+            usersReturn.errorMessage = 'Error Occurs';
+            return usersReturn;
+        }
+        return usersReturn;
+    });
+}
+exports.getUsers = getUsers;
 function updateUser(phoneNo, image, idKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        // const storage = new Storage(getGCPCredentials());
-        // const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
         const updateReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
         try {
             const user = yield user_1.User.findById(idKey);
-            // let url = process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/';
             if (!user) {
                 updateReturn.errorCode = 404;
                 updateReturn.errorMessage = 'User not found';
                 return updateReturn;
             }
             ;
-            // if (image) {
-            //     const url = await uploadFile(image);
-            // const fileName = await syncFile(image);
-            // url = url + fileName;
-            // const extArray = image.mimetype.split("/");
-            // const extension = extArray[extArray.length - 1];
-            // const fileName = uuidv4() + '.' + extension;
-            // url = url+ fileName;
-            // console.log("IN upload file");
-            // console.log("originalname " , image.originalname);
-            // console.log("mimetype " , image.mimetype);
-            // const blob = bucket.file(fileName);
-            // const blobStream = blob.createWriteStream();
-            // blobStream.on("finish", () => {
-            //      url = url + fileName;
-            //      console.log("Success");
-            // });
-            // blobStream.on("error", (error) => {
-            //     console.log("error ", error.message );
-            // });
-            // blobStream.end(image.buffer);
-            // }
-            console.log("Start to upload ", new Date().toLocaleString());
-            const blob = yield (0, fileUpload_1.uploadImage)(image);
-            console.log("End to upload ", new Date().toLocaleString());
+            if (image) {
+                const blob = yield (0, fileUpload_1.uploadImage)(image);
+                user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
+            }
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
             }
-            console.log("Finisg encrpty at ", new Date().toLocaleString());
-            user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
-            //user.image =blob;
             yield user.save();
-            console.log("Finisg save at ", new Date().toLocaleString());
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";
             return updateReturn;
@@ -146,3 +139,24 @@ function updateUser(phoneNo, image, idKey) {
     });
 }
 exports.updateUser = updateUser;
+function deleteUser(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const deleteReturn = {
+            errorCode: 500,
+            errorMessage: 'Error Occurs'
+        };
+        try {
+            yield user_1.User.findByIdAndDelete(userId);
+            deleteReturn.errorCode = 0;
+            deleteReturn.errorMessage = "";
+            return deleteReturn;
+        }
+        catch (_a) {
+            deleteReturn.errorCode = 500;
+            deleteReturn.errorMessage = 'Error Occurs';
+            return deleteReturn;
+        }
+        return deleteReturn;
+    });
+}
+exports.deleteUser = deleteUser;
