@@ -79,7 +79,7 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
 
 export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const response = await userService.deleteUser(req.body.userId.toString());
+        const response = await userService.deleteUser(req.body._id.toString());
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
         }

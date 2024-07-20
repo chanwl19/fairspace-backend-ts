@@ -162,7 +162,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
     return updateReturn;
 }
 
-export async function deleteUser(userId: string): Promise<BasicReturn> {
+export async function deleteUser(_id: string): Promise<BasicReturn> {
 
     const deleteReturn: BasicReturn = {
         errorCode: 500,
@@ -171,7 +171,7 @@ export async function deleteUser(userId: string): Promise<BasicReturn> {
 
     try {
 
-        await User.findByIdAndDelete(userId);
+        await User.findByIdAndDelete(_id);
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
         return deleteReturn

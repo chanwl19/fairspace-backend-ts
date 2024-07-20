@@ -118,7 +118,7 @@ exports.updateUser = updateUser;
 function deleteUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield userService.deleteUser(req.body.userId.toString());
+            const response = yield userService.deleteUser(req.body._id.toString());
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }

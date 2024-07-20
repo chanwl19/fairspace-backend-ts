@@ -157,14 +157,14 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
     });
 }
 exports.updateUser = updateUser;
-function deleteUser(userId) {
+function deleteUser(_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const deleteReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
         try {
-            yield user_1.User.findByIdAndDelete(userId);
+            yield user_1.User.findByIdAndDelete(_id);
             deleteReturn.errorCode = 0;
             deleteReturn.errorMessage = "";
             return deleteReturn;
