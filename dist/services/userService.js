@@ -16,7 +16,6 @@ exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
-const encryptText_1 = require("../middlewares/encryptText");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
@@ -129,7 +128,7 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
             //     user.image = blob?.downloadUrl;
             // }
             if (phoneNo) {
-                user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+                user.phoneNo = phoneNo;
             }
             if (email) {
                 user.email = email;

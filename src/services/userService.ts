@@ -135,7 +135,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         //     user.image = blob?.downloadUrl;
         // }
         if (phoneNo) {
-            user.phoneNo = encrypt(phoneNo);
+            user.phoneNo = phoneNo;
         }
         if (email) {
             user.email = email;
