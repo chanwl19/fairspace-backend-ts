@@ -40,9 +40,9 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             return signupReturn;
         }
         ;
-        if (phoneNo) {
-            phoneNo = (0, encryptText_1.encrypt)(phoneNo);
-        }
+        // if (phoneNo) {
+        //     phoneNo = encrypt(phoneNo);
+        // }
         //create user if not exist
         yield user_1.User.create({
             userId: userId,

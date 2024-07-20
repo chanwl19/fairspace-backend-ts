@@ -46,9 +46,9 @@ export async function signup(userId: string, password: string, email: string, ro
         return signupReturn;
     };
 
-    if (phoneNo) {
-        phoneNo = encrypt(phoneNo);
-    }
+    // if (phoneNo) {
+    //     phoneNo = encrypt(phoneNo);
+    // }
 
     //create user if not exist
     await User.create({
