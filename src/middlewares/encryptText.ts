@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 const encryptKey = process.env.ENCRYPT_KEY || 'MY_SECRET_KEY';
 const algorithm = 'aes-256-ctr'; 
-const ivLength = 16;
+const ivLength = 32;
 
 export function encrypt(text: string) : string{
     try {

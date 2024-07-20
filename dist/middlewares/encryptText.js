@@ -7,7 +7,7 @@ exports.decrypt = exports.encrypt = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const encryptKey = process.env.ENCRYPT_KEY || 'MY_SECRET_KEY';
 const algorithm = 'aes-256-ctr';
-const ivLength = 16;
+const ivLength = 32;
 function encrypt(text) {
     try {
         const iv = crypto_1.default.randomBytes(ivLength);
