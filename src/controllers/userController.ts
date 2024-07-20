@@ -66,7 +66,8 @@ export async function getUsers(req: Request, res: Response, next: NextFunction):
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const file = req.file as Express.Multer.File;
-        const response = await userService.updateUser(req.body.phoneNo, file, req.body._id.toString());
+        const response = await userService.updateUser(req.body.phoneNo, file, req.body._id.toString(), req.body.password, req.body.email, req.body.roleIds,
+            req.body.firstName, req.body.middleName, req.body.lastName);
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
         }

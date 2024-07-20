@@ -18,7 +18,6 @@ const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const encryptText_1 = require("../middlewares/encryptText");
 const dotenv_1 = __importDefault(require("dotenv"));
-const fileUpload_1 = require("../middlewares/fileUpload");
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -41,6 +40,9 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             return signupReturn;
         }
         ;
+        if (phoneNo) {
+            phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+        }
         //create user if not exist
         yield user_1.User.create({
             userId: userId,
@@ -108,7 +110,7 @@ function getUsers() {
     });
 }
 exports.getUsers = getUsers;
-function updateUser(phoneNo, image, idKey) {
+function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, middleName, lastName) {
     return __awaiter(this, void 0, void 0, function* () {
         const updateReturn = {
             errorCode: 500,
@@ -122,12 +124,24 @@ function updateUser(phoneNo, image, idKey) {
                 return updateReturn;
             }
             ;
-            if (image) {
-                const blob = yield (0, fileUpload_1.uploadImage)(image);
-                user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
-            }
+            // if (image) {
+            //     const blob = await uploadImage(image);
+            //     user.image = blob?.downloadUrl;
+            // }
             if (phoneNo) {
                 user.phoneNo = (0, encryptText_1.encrypt)(phoneNo);
+            }
+            if (email) {
+                user.email = email;
+            }
+            if (firstName) {
+                user.firstName = firstName;
+            }
+            if (middleName) {
+                user.middleName = middleName;
+            }
+            if (lastName) {
+                user.middleName = lastName;
             }
             yield user.save();
             updateReturn.errorCode = 0;

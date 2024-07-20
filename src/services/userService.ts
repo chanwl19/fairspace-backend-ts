@@ -46,6 +46,10 @@ export async function signup(userId: string, password: string, email: string, ro
         return signupReturn;
     };
 
+    if (phoneNo) {
+        phoneNo = encrypt(phoneNo);
+    }
+
     //create user if not exist
     await User.create({
         userId: userId,
@@ -112,7 +116,8 @@ export async function getUsers() {
     return usersReturn;
 }
 
-export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string): Promise<BasicReturn> {
+export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string, password: string,
+    email: string, roleIds: number[], firstName: string, middleName: string, lastName: string): Promise<BasicReturn> {
     const updateReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -125,12 +130,24 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-        if (image) {
-            const blob = await uploadImage(image);
-            user.image = blob?.downloadUrl;
-        }
+        // if (image) {
+        //     const blob = await uploadImage(image);
+        //     user.image = blob?.downloadUrl;
+        // }
         if (phoneNo) {
             user.phoneNo = encrypt(phoneNo);
+        }
+        if (email) {
+            user.email = email;
+        }
+        if (firstName) {
+            user.firstName = firstName;
+        }
+        if (middleName) {
+            user.middleName = middleName;
+        }
+        if (lastName) {
+            user.middleName = lastName;
         }
         await user.save();
         updateReturn.errorCode = 0;
