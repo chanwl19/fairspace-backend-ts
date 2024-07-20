@@ -11,13 +11,17 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
         await check("roleIds", "Please select role").isArray({ min: 1 }).run(req);
         await check("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
         await body("email").normalizeEmail().run(req);
+        await body("firstName", "First name cannot be blank").isEmpty().run(req);
+        await body("lastName", "Last name cannot be blank").isEmpty().run(req);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return next(new ApiError('Validation failed.', 422, errors.array()));
         }
 
-        const response = await userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds);
+        const response = await userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds,
+            req.body.firstName, req.body.middleName, req.body.lastName, req.body.phoneNo
+        );
 
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
@@ -72,7 +76,7 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
     }
 }
 
-export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void>{
+export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const response = await userService.deleteUser(req.body.userId.toString());
         if (response.errorCode !== 0) {

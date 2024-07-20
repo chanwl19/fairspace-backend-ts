@@ -45,11 +45,13 @@ function signup(req, res, next) {
             yield (0, express_validator_1.check)("roleIds", "Please select role").isArray({ min: 1 }).run(req);
             yield (0, express_validator_1.check)("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
             yield (0, express_validator_1.body)("email").normalizeEmail().run(req);
+            yield (0, express_validator_1.body)("firstName", "First name cannot be blank").isEmpty().run(req);
+            yield (0, express_validator_1.body)("lastName", "Last name cannot be blank").isEmpty().run(req);
             const errors = (0, express_validator_1.validationResult)(req);
             if (!errors.isEmpty()) {
                 return next(new apiError_1.ApiError('Validation failed.', 422, errors.array()));
             }
-            const response = yield userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds);
+            const response = yield userService.signup(req.body.userId, req.body.password, req.body.email, req.body.roleIds, req.body.firstName, req.body.middleName, req.body.lastName, req.body.phoneNo);
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }

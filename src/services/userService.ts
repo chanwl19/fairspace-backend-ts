@@ -22,7 +22,8 @@ interface UsersReturn extends BasicReturn {
     users: InstanceType<typeof User>[];
 }
 
-export async function signup(userId: string, password: string, email: string, roleIds: number[]): Promise<BasicReturn> {
+export async function signup(userId: string, password: string, email: string, roleIds: number[], firstName: string,
+    middleName: string, lastName: string, phoneNo: string): Promise<BasicReturn> {
     const signupReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -51,7 +52,11 @@ export async function signup(userId: string, password: string, email: string, ro
         password: await hash(password, 12),
         email: email,
         status: 'A',
-        roles: roles
+        roles: roles,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        phoneNo: phoneNo
     });
 
     signupReturn.errorCode = 0;
@@ -85,7 +90,7 @@ export async function getUserById(userId: string): Promise<UserReturn> {
     return userReturn;
 }
 
-export async function getUsers(){
+export async function getUsers() {
 
     const usersReturn: UsersReturn = {
         users: [],
@@ -103,7 +108,7 @@ export async function getUsers(){
         usersReturn.errorMessage = 'Error Occurs';
         return usersReturn;
     }
-    
+
     return usersReturn;
 }
 
@@ -148,7 +153,7 @@ export async function deleteUser(userId: string): Promise<BasicReturn> {
     };
 
     try {
-        
+
         await User.findByIdAndDelete(userId);
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";

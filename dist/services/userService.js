@@ -20,7 +20,7 @@ const encryptText_1 = require("../middlewares/encryptText");
 const dotenv_1 = __importDefault(require("dotenv"));
 const fileUpload_1 = require("../middlewares/fileUpload");
 dotenv_1.default.config();
-function signup(userId, password, email, roleIds) {
+function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
         const signupReturn = {
             errorCode: 500,
@@ -47,7 +47,11 @@ function signup(userId, password, email, roleIds) {
             password: yield (0, bcryptjs_1.hash)(password, 12),
             email: email,
             status: 'A',
-            roles: roles
+            roles: roles,
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName,
+            phoneNo: phoneNo
         });
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';
