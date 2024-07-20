@@ -5,11 +5,17 @@ const algorithm = 'aes-256-ctr';
 const ivLength = 16;
 
 export function encrypt(text: string) : string{
+    try {
     const iv = crypto.randomBytes(ivLength);
     const cipher = crypto.createCipheriv(algorithm, encryptKey, iv);
     let encrypted = cipher.update(text, 'utf-8', 'hex');
     encrypted += cipher.final('hex');
+    console.log("IN encrypted " + encrypted)
     return encrypted;
+    } catch (error) {
+        console.log(error)
+    }
+    return "";
 } 
 
 export function decrypt(encryptedText: string) : string{

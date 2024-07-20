@@ -9,11 +9,18 @@ const encryptKey = process.env.ENCRYPT_KEY || 'MY_SECRET_KEY';
 const algorithm = 'aes-256-ctr';
 const ivLength = 16;
 function encrypt(text) {
-    const iv = crypto_1.default.randomBytes(ivLength);
-    const cipher = crypto_1.default.createCipheriv(algorithm, encryptKey, iv);
-    let encrypted = cipher.update(text, 'utf-8', 'hex');
-    encrypted += cipher.final('hex');
-    return encrypted;
+    try {
+        const iv = crypto_1.default.randomBytes(ivLength);
+        const cipher = crypto_1.default.createCipheriv(algorithm, encryptKey, iv);
+        let encrypted = cipher.update(text, 'utf-8', 'hex');
+        encrypted += cipher.final('hex');
+        console.log("IN encrypted " + encrypted);
+        return encrypted;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return "";
 }
 exports.encrypt = encrypt;
 function decrypt(encryptedText) {
