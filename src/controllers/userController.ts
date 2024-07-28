@@ -89,3 +89,16 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
     }
 }
 
+export async function changePassword(req: Request, res: Response, next: NextFunction): Promise<void>{
+    try {
+        await check("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
+        await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+        const response = await userService.resetPassword(req.body.userId, req.body.password, req.body.token);
+        if (response.errorCode !== 0) {
+            return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+        }
+        res.status(201).json({ 'message': 'successfully delete user' });
+    } catch {
+        return next(new ApiError("Error Occurs", 500, []));
+    }
+}

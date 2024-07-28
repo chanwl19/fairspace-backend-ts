@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
+exports.changePassword = exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const apiError_1 = require("../models/apiError");
 const userService = __importStar(require("../services/userService"));
@@ -130,3 +130,20 @@ function deleteUser(req, res, next) {
     });
 }
 exports.deleteUser = deleteUser;
+function changePassword(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield (0, express_validator_1.check)("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
+            yield (0, express_validator_1.check)("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+            const response = yield userService.resetPassword(req.body.userId, req.body.password, req.body.token);
+            if (response.errorCode !== 0) {
+                return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
+            }
+            res.status(201).json({ 'message': 'successfully delete user' });
+        }
+        catch (_a) {
+            return next(new apiError_1.ApiError("Error Occurs", 500, []));
+        }
+    });
+}
+exports.changePassword = changePassword;

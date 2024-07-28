@@ -35,11 +35,13 @@ function login(userId, password) {
             return loginReturn;
         }
         ;
-        const isCorrectPassword = yield (0, bcryptjs_1.compare)(password, user.password);
-        if (!isCorrectPassword) {
-            loginReturn.errorCode = 401;
-            loginReturn.errorMessage = 'Invalid user id and password';
-            return loginReturn;
+        if (user.password) {
+            const isCorrectPassword = yield (0, bcryptjs_1.compare)(password, user.password);
+            if (!isCorrectPassword) {
+                loginReturn.errorCode = 401;
+                loginReturn.errorMessage = 'Invalid user id and password';
+                return loginReturn;
+            }
         }
         const accessToken = (0, jsonwebtoken_1.sign)({ "userId": user.userId, "roles": user.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '60s' });
         const refreshToken = (0, jsonwebtoken_1.sign)({ "userId": user.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });

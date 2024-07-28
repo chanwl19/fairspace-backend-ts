@@ -176,16 +176,43 @@ export async function deleteUser(_id: string): Promise<BasicReturn> {
     };
 
     try {
-
         await User.findByIdAndDelete(_id);
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
-        return deleteReturn
     } catch {
         deleteReturn.errorCode = 500;
         deleteReturn.errorMessage = 'Error Occurs';
-        return deleteReturn;
+    }
+    return deleteReturn;
+}
+
+export async function resetPassword(userId: string, password: string, token: string): Promise<BasicReturn> {
+    const resetPasswordReturn: BasicReturn = {
+        errorCode: 500,
+        errorMessage: 'Error Occurs'
+    };
+
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+
+    try {
+        const user = await User.findOne({ $and: [{userId : userId}, {resetPasswordToken: token}]});
+
+        if (!user) {
+            resetPasswordReturn.errorCode = 404;
+            resetPasswordReturn.errorMessage = "No user found";
+            return resetPasswordReturn;
+        }
+        user.password = await hash(password, 12);
+        user.resetPasswordToken = "";
+        await user.save();
+        sess.commitTransaction();
+        resetPasswordReturn.errorCode = 0;
+        resetPasswordReturn.errorMessage = "";
+    } catch {
+        resetPasswordReturn.errorCode = 500;
+        resetPasswordReturn.errorMessage = 'Error Occurs';
     }
 
-    return deleteReturn
+    return resetPasswordReturn;
 }

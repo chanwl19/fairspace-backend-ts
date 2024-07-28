@@ -29,11 +29,13 @@ export async function login(userId: string, password: string): Promise<LoginRetu
         return loginReturn;
     };
 
-    const isCorrectPassword = await compare(password, user.password);
-    if (!isCorrectPassword) {
-        loginReturn.errorCode = 401 ;
-        loginReturn.errorMessage = 'Invalid user id and password';
-        return loginReturn;
+    if (user.password) {
+        const isCorrectPassword = await compare(password, user.password);
+        if (!isCorrectPassword) {
+            loginReturn.errorCode = 401 ;
+            loginReturn.errorMessage = 'Invalid user id and password';
+            return loginReturn;
+        }
     }
 
     const accessToken = sign(

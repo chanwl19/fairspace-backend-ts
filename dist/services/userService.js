@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
+exports.resetPassword = exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
+const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
 const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
 const uuid_1 = require("uuid");
@@ -173,14 +174,42 @@ function deleteUser(_id) {
             yield user_1.User.findByIdAndDelete(_id);
             deleteReturn.errorCode = 0;
             deleteReturn.errorMessage = "";
-            return deleteReturn;
         }
         catch (_a) {
             deleteReturn.errorCode = 500;
             deleteReturn.errorMessage = 'Error Occurs';
-            return deleteReturn;
         }
         return deleteReturn;
     });
 }
 exports.deleteUser = deleteUser;
+function resetPassword(userId, password, token) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const resetPasswordReturn = {
+            errorCode: 500,
+            errorMessage: 'Error Occurs'
+        };
+        const sess = yield mongoose_1.default.startSession();
+        sess.startTransaction();
+        try {
+            const user = yield user_1.User.findOne({ $and: [{ userId: userId }, { resetPasswordToken: token }] });
+            if (!user) {
+                resetPasswordReturn.errorCode = 404;
+                resetPasswordReturn.errorMessage = "No user found";
+                return resetPasswordReturn;
+            }
+            user.password = yield (0, bcryptjs_1.hash)(password, 12);
+            user.resetPasswordToken = "";
+            yield user.save();
+            sess.commitTransaction();
+            resetPasswordReturn.errorCode = 0;
+            resetPasswordReturn.errorMessage = "";
+        }
+        catch (_a) {
+            resetPasswordReturn.errorCode = 500;
+            resetPasswordReturn.errorMessage = 'Error Occurs';
+        }
+        return resetPasswordReturn;
+    });
+}
+exports.resetPassword = resetPassword;
