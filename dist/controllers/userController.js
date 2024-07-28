@@ -40,8 +40,8 @@ function signup(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield (0, express_validator_1.check)("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);
-            yield (0, express_validator_1.check)("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
-            yield (0, express_validator_1.check)("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+            //await check("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
+            //await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
             yield (0, express_validator_1.check)("roleIds", "Please select role").isArray({ min: 1 }).run(req);
             yield (0, express_validator_1.check)("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
             yield (0, express_validator_1.body)("email").normalizeEmail().run(req);

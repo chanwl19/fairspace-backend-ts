@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { uploadFile, uploadImage } from '../middlewares/fileUpload';
 import sendEmail from '../middlewares/sendEmail';
 import { v4 as uuidv4 } from 'uuid';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ interface UsersReturn extends BasicReturn {
 
 export async function signup(userId: string, password: string, email: string, roleIds: number[], firstName: string,
     middleName: string, lastName: string, phoneNo: string): Promise<BasicReturn> {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    
     const signupReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -70,6 +74,7 @@ export async function signup(userId: string, password: string, email: string, ro
 
     signupReturn.errorCode = 0;
     signupReturn.errorMessage = '';
+    await sess.commitTransaction();
     return signupReturn;
 }
 

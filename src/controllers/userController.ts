@@ -6,8 +6,8 @@ import * as userService from '../services/userService';
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         await check("userId", "userId cannot be blank").isLength({ min: 9, max: 9 }).run(req);
-        await check("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
-        await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+        //await check("password", "Password must be at least 10 characters long").isLength({ min: 10 }).run(req);
+        //await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
         await check("roleIds", "Please select role").isArray({ min: 1 }).run(req);
         await check("email", "Email is not a valid centennial email").isEmail().matches(/^[A-Za-z0-9]+@my\.centennialcollege\.ca$/).run(req);
         await body("email").normalizeEmail().run(req);

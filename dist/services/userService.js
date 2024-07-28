@@ -18,9 +18,12 @@ const role_1 = require("../models/role");
 const dotenv_1 = __importDefault(require("dotenv"));
 const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
 const uuid_1 = require("uuid");
+const mongoose_1 = __importDefault(require("mongoose"));
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
+        const sess = yield mongoose_1.default.startSession();
+        sess.startTransaction();
         const signupReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
@@ -60,6 +63,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
         });
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';
+        yield sess.commitTransaction();
         return signupReturn;
     });
 }
