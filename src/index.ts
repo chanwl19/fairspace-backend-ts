@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
@@ -40,9 +39,6 @@ app.use(cors(
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded());
 app.use(express.json());
-// for form data
-const directory = path.join(__dirname, "uploads/images");
-app.use('/uploads/images',  express.static(directory));
 
 //middleware for cookies
 app.use(cookieParser());

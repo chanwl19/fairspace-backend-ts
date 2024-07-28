@@ -17,6 +17,7 @@ const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
+const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,7 +27,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
         };
         //check if user exist
         const duplicatedUser = yield user_1.User.findOne({ $or: [{ userId: userId }, { email: email }] });
-        if (duplicatedUser) {
+        if (duplicatedUser && duplicatedUser.status !== 'D') {
             signupReturn.errorCode = 409;
             signupReturn.errorMessage = 'User already exists';
             return signupReturn;
@@ -39,6 +40,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             return signupReturn;
         }
         ;
+        yield (0, sendEmail_1.default)("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1>");
         // if (phoneNo) {
         //     phoneNo = encrypt(phoneNo);
         // }

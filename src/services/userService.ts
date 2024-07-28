@@ -2,10 +2,10 @@ import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
 import { encrypt } from '../middlewares/encryptText';
-import getGCPCredentials from '../middlewares/gcpCredentials';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 import { uploadFile, uploadImage } from '../middlewares/fileUpload';
+import sendEmail from '../middlewares/sendEmail';
 
 dotenv.config();
 
@@ -29,9 +29,9 @@ export async function signup(userId: string, password: string, email: string, ro
         errorMessage: 'Error Occurs'
     };
     //check if user exist
-    const duplicatedUser = await User.findOne({ $or: [{ userId: userId }, { email: email }] });
+    const duplicatedUser = await User.findOne({ $or: [{ userId: userId}, { email: email }] });
 
-    if (duplicatedUser) {
+    if (duplicatedUser && duplicatedUser.status !== 'D') {
         signupReturn.errorCode = 409;
         signupReturn.errorMessage = 'User already exists';
         return signupReturn;
@@ -45,6 +45,8 @@ export async function signup(userId: string, password: string, email: string, ro
         signupReturn.errorMessage = 'Role not found';
         return signupReturn;
     };
+
+    await sendEmail("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1>");
 
     // if (phoneNo) {
     //     phoneNo = encrypt(phoneNo);
