@@ -44,10 +44,9 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             return signupReturn;
         }
         ;
+        console.log("I am here before email");
         yield (0, sendEmail_1.default)("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-        // if (phoneNo) {
-        //     phoneNo = encrypt(phoneNo);
-        // }
+        console.log("I am here after email");
         //create user if not exist
         yield user_1.User.create({
             userId: userId,
@@ -58,9 +57,9 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             firstName: firstName,
             middleName: middleName,
             lastName: lastName,
-            //phoneNo: phoneNo
             resetPasswordToken: resetPasswordToken
         });
+        console.log("I am here after save user");
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';
         yield sess.commitTransaction();
