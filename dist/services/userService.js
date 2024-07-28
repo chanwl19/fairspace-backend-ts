@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUserById = exports.signup = void 0;
 const user_1 = require("../models/user");
 const role_1 = require("../models/role");
-const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
 const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
+const uuid_1 = require("uuid");
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -34,27 +34,29 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
         }
         //check if role exists
         const roles = yield role_1.Role.find({ roleId: roleIds });
+        const resetPasswordToken = (0, uuid_1.v4)();
         if (!roles || roles.length === 0) {
             signupReturn.errorCode = 404;
             signupReturn.errorMessage = 'Role not found';
             return signupReturn;
         }
         ;
-        yield (0, sendEmail_1.default)("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1>");
+        yield (0, sendEmail_1.default)("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
         // if (phoneNo) {
         //     phoneNo = encrypt(phoneNo);
         // }
         //create user if not exist
         yield user_1.User.create({
             userId: userId,
-            password: yield (0, bcryptjs_1.hash)(password, 12),
+            //password: await hash(password, 12),
             email: email,
-            status: 'A',
+            status: 'I',
             roles: roles,
             firstName: firstName,
             middleName: middleName,
             lastName: lastName,
-            phoneNo: phoneNo
+            //phoneNo: phoneNo
+            resetPasswordToken: resetPasswordToken
         });
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';

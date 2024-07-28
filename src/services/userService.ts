@@ -6,6 +6,7 @@ import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 import { uploadFile, uploadImage } from '../middlewares/fileUpload';
 import sendEmail from '../middlewares/sendEmail';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ export async function signup(userId: string, password: string, email: string, ro
 
     //check if role exists
     const roles = await Role.find({ roleId: roleIds });
+    const resetPasswordToken = uuidv4();
 
     if (!roles || roles.length === 0) {
         signupReturn.errorCode = 404;
@@ -46,7 +48,7 @@ export async function signup(userId: string, password: string, email: string, ro
         return signupReturn;
     };
 
-    await sendEmail("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1>");
+    await sendEmail("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
 
     // if (phoneNo) {
     //     phoneNo = encrypt(phoneNo);
@@ -55,14 +57,15 @@ export async function signup(userId: string, password: string, email: string, ro
     //create user if not exist
     await User.create({
         userId: userId,
-        password: await hash(password, 12),
+        //password: await hash(password, 12),
         email: email,
-        status: 'A',
+        status: 'I',
         roles: roles,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
-        phoneNo: phoneNo
+        //phoneNo: phoneNo
+        resetPasswordToken: resetPasswordToken
     });
 
     signupReturn.errorCode = 0;

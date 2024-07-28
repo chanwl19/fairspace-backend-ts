@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import getGCPCredentials from '../middlewares/gcpCredentials';
 import { Storage } from '@google-cloud/storage';
 import { put } from '@vercel/blob';
-import fs from 'fs';
 
 dotenv.config();
 

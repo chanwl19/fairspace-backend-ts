@@ -37,6 +37,9 @@ const userSchema = new mongoose_1.Schema({
     refreshToken: {
         type: String
     },
+    resetPasswordToken: {
+        type: String
+    },
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
