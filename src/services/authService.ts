@@ -22,7 +22,7 @@ export async function login(userId: string, password: string): Promise<LoginRetu
         user: new User()
     };
     //check if user exist
-    const user = await User.findOne({ userId: userId }).populate('roles');
+    const user = await User.findOne({ $and :[{ userId: userId }, {status :'A'} ]}).populate('roles');
     if (!user) {
         loginReturn.errorCode = 401;
         loginReturn.errorMessage = 'Invalid user id and password';

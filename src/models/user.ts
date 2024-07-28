@@ -34,9 +34,6 @@ const userSchema = new Schema({
   refreshToken: {
     type: String
   },
-  resetPasswordToken:{
-    type: String
-  },
   roles: [
     {
       type: Schema.Types.ObjectId,

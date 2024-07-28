@@ -139,7 +139,7 @@ function changePassword(req, res, next) {
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }
-            res.status(201).json({ 'message': 'successfully delete user' });
+            res.status(201).json({ 'message': 'successfully update user password' });
         }
         catch (_a) {
             return next(new apiError_1.ApiError("Error Occurs", 500, []));

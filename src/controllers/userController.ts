@@ -97,7 +97,7 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
         }
-        res.status(201).json({ 'message': 'successfully delete user' });
+        res.status(201).json({ 'message': 'successfully update user password' });
     } catch {
         return next(new ApiError("Error Occurs", 500, []));
     }

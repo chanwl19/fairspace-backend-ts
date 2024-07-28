@@ -18,8 +18,8 @@ const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
 const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
-const uuid_1 = require("uuid");
 const mongoose_1 = __importDefault(require("mongoose"));
+const jsonwebtoken_1 = require("jsonwebtoken");
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -38,7 +38,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
         }
         //check if role exists
         const roles = yield role_1.Role.find({ roleId: roleIds });
-        const resetPasswordToken = (0, uuid_1.v4)();
+        const resetPasswordToken = (0, jsonwebtoken_1.sign)({ "userId": userId }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '2d' });
         if (!roles || roles.length === 0) {
             signupReturn.errorCode = 404;
             signupReturn.errorMessage = 'Role not found';
@@ -57,8 +57,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             roles: roles,
             firstName: firstName,
             middleName: middleName,
-            lastName: lastName,
-            resetPasswordToken: resetPasswordToken
+            lastName: lastName
         });
         console.log("I am here after save user");
         signupReturn.errorCode = 0;
@@ -192,20 +191,40 @@ function resetPassword(userId, password, token) {
         const sess = yield mongoose_1.default.startSession();
         sess.startTransaction();
         try {
-            const user = yield user_1.User.findOne({ $and: [{ userId: userId }, { resetPasswordToken: token }] });
+            let user;
+            if (userId) {
+                user = yield user_1.User.findOne({ userId: userId });
+            }
+            if (token) {
+                try {
+                    const decoded = yield (0, jsonwebtoken_1.verify)(token, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY');
+                    console.log("token id ", decoded);
+                    if (!decoded) {
+                        resetPasswordReturn.errorCode = 404;
+                        resetPasswordReturn.errorMessage = "Token has already expired";
+                        return resetPasswordReturn;
+                    }
+                    user = yield user_1.User.findOne({ userId: decoded.userId });
+                }
+                catch (_a) {
+                    resetPasswordReturn.errorCode = 404;
+                    resetPasswordReturn.errorMessage = "Token has already expired";
+                    return resetPasswordReturn;
+                }
+            }
             if (!user) {
                 resetPasswordReturn.errorCode = 404;
                 resetPasswordReturn.errorMessage = "No user found";
                 return resetPasswordReturn;
             }
             user.password = yield (0, bcryptjs_1.hash)(password, 12);
-            user.resetPasswordToken = "";
+            user.status = 'A';
             yield user.save();
             sess.commitTransaction();
             resetPasswordReturn.errorCode = 0;
             resetPasswordReturn.errorMessage = "";
         }
-        catch (_a) {
+        catch (_b) {
             resetPasswordReturn.errorCode = 500;
             resetPasswordReturn.errorMessage = 'Error Occurs';
         }

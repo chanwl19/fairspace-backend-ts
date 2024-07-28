@@ -2,12 +2,12 @@ import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
 import { encrypt } from '../middlewares/encryptText';
-import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 import { uploadFile, uploadImage } from '../middlewares/fileUpload';
 import sendEmail from '../middlewares/sendEmail';
-import { v4 as uuidv4 } from 'uuid';
 import mongoose from 'mongoose';
+import { sign, verify } from 'jsonwebtoken';
+
 
 dotenv.config();
 
@@ -24,17 +24,23 @@ interface UsersReturn extends BasicReturn {
     users: InstanceType<typeof User>[];
 }
 
+interface TokenInterface {
+    userId: string;
+    iat: number;
+    exp: number;
+}
+
 export async function signup(userId: string, password: string, email: string, roleIds: number[], firstName: string,
     middleName: string, lastName: string, phoneNo: string): Promise<BasicReturn> {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    
+
     const signupReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
     };
     //check if user exist
-    const duplicatedUser = await User.findOne({ $or: [{ userId: userId}, { email: email }] });
+    const duplicatedUser = await User.findOne({ $or: [{ userId: userId }, { email: email }] });
 
     if (duplicatedUser && duplicatedUser.status !== 'D') {
         signupReturn.errorCode = 409;
@@ -44,7 +50,11 @@ export async function signup(userId: string, password: string, email: string, ro
 
     //check if role exists
     const roles = await Role.find({ roleId: roleIds });
-    const resetPasswordToken = uuidv4();
+    const resetPasswordToken = sign(
+        { "userId": userId },
+        process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY',
+        { expiresIn: '2d' }
+    );
 
     if (!roles || roles.length === 0) {
         signupReturn.errorCode = 404;
@@ -53,7 +63,7 @@ export async function signup(userId: string, password: string, email: string, ro
     };
     console.log("I am here before email")
     await sendEmail("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-    
+
     console.log("I am here after email")
     //create user if not exist
     await User.create({
@@ -64,8 +74,7 @@ export async function signup(userId: string, password: string, email: string, ro
         roles: roles,
         firstName: firstName,
         middleName: middleName,
-        lastName: lastName,
-        resetPasswordToken: resetPasswordToken
+        lastName: lastName
     });
     console.log("I am here after save user")
     signupReturn.errorCode = 0;
@@ -196,15 +205,34 @@ export async function resetPassword(userId: string, password: string, token: str
     sess.startTransaction();
 
     try {
-        const user = await User.findOne({ $and: [{userId : userId}, {resetPasswordToken: token}]});
-
+        let user;
+        if (userId) {
+            user = await User.findOne({ userId: userId });
+        }
+        if (token) {
+            try {
+                const decoded = await verify(token, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY');
+                console.log("token id ", decoded);
+                if (!decoded) {
+                    resetPasswordReturn.errorCode = 404;
+                    resetPasswordReturn.errorMessage = "Token has already expired";
+                    return resetPasswordReturn;
+                }
+                user = await User.findOne({ userId: (decoded as TokenInterface).userId });
+            } catch {
+                resetPasswordReturn.errorCode = 404;
+                resetPasswordReturn.errorMessage = "Token has already expired";
+                return resetPasswordReturn;
+            }
+        }
         if (!user) {
             resetPasswordReturn.errorCode = 404;
             resetPasswordReturn.errorMessage = "No user found";
             return resetPasswordReturn;
         }
+
         user.password = await hash(password, 12);
-        user.resetPasswordToken = "";
+        user.status = 'A';
         await user.save();
         sess.commitTransaction();
         resetPasswordReturn.errorCode = 0;

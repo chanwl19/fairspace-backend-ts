@@ -27,7 +27,6 @@ function refreshToken(token) {
             user: new user_1.User()
         };
         const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
-        console.log("In refresh service ", foundUser);
         // Detected refresh token reuse!
         if (!foundUser) {
             console.log("NO user found");

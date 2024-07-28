@@ -28,7 +28,6 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     };
 
     const foundUser = await User.findOne({ refreshToken: token }).populate('roles');
-    console.log("In refresh service ", foundUser)
     // Detected refresh token reuse!
     if (!foundUser) {
         console.log("NO user found");

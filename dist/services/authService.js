@@ -28,7 +28,7 @@ function login(userId, password) {
             user: new user_1.User()
         };
         //check if user exist
-        const user = yield user_1.User.findOne({ userId: userId }).populate('roles');
+        const user = yield user_1.User.findOne({ $and: [{ userId: userId }, { status: 'A' }] }).populate('roles');
         if (!user) {
             loginReturn.errorCode = 401;
             loginReturn.errorMessage = 'Invalid user id and password';

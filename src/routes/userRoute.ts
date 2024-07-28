@@ -11,7 +11,7 @@ userRoute.route('/')
     .patch(fileHandler.single('image'), userController.updateUser)
     .delete(userController.deleteUser);
 
-userRoute.route('/resetPasswird')
+userRoute.route('/resetPassword')
     .post(userController.changePassword);
 
 export default userRoute;    

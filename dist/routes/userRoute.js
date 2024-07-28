@@ -33,6 +33,6 @@ userRoute.route('/')
     .get(userController.getUsers)
     .patch(fileUpload_1.fileHandler.single('image'), userController.updateUser)
     .delete(userController.deleteUser);
-userRoute.route('/resetPasswird')
+userRoute.route('/resetPassword')
     .post(userController.changePassword);
 exports.default = userRoute;
