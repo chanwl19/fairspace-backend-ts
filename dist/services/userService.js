@@ -152,9 +152,6 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
                     user.roles = roles.map(role => role._id);
                 }
             }
-            else {
-                user.roles = [];
-            }
             yield user.save();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";

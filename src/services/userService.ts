@@ -167,8 +167,6 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             if (roles && roles?.length > 0){
                 user.roles = roles.map(role => role._id);
             }
-        } else {
-            user.roles = [];
         }
         await user.save();
         updateReturn.errorCode = 0;
