@@ -28,6 +28,7 @@ function sendEmail(from, to, subject, content) {
             subject: subject,
             html: content
         };
+        console.log("Before sendingemail ");
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error, " when sending email");

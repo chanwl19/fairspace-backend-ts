@@ -15,7 +15,7 @@ export default async function sendEmail(from: string, to: string, subject: strin
         subject: subject,
         html: content
     };
-
+    console.log("Before sendingemail ")
     transporter.sendMail(mailOptions, (error, info)=> {
         if (error) {
             console.log(error , " when sending email");
