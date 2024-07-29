@@ -32,52 +32,60 @@ interface TokenInterface {
 
 export async function signup(userId: string, password: string, email: string, roleIds: number[], firstName: string,
     middleName: string, lastName: string, phoneNo: string): Promise<BasicReturn> {
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
 
     const signupReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
     };
-    //check if user exist
-    const duplicatedUser = await User.findOne({ $or: [{ userId: userId }, { email: email }] });
 
-    if (duplicatedUser && duplicatedUser.status !== 'D') {
-        signupReturn.errorCode = 409;
-        signupReturn.errorMessage = 'User already exists';
-        return signupReturn;
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+
+    try {
+        //check if user exist
+        const duplicatedUser = await User.findOne({ $or: [{ userId: userId }, { email: email }] });
+
+        if (duplicatedUser && duplicatedUser.status !== 'D') {
+            signupReturn.errorCode = 409;
+            signupReturn.errorMessage = 'User already exists';
+            return signupReturn;
+        }
+
+        //check if role exists
+        const roles = await Role.find({ roleId: roleIds });
+        const resetPasswordToken = sign(
+            { "userId": userId },
+            process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY',
+            { expiresIn: '2d' }
+        );
+
+        if (!roles || roles.length === 0) {
+            signupReturn.errorCode = 404;
+            signupReturn.errorMessage = 'Role not found';
+            return signupReturn;
+        };
+
+        await sendEmail("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+
+        //create user if not exist
+        await User.create({
+            userId: userId,
+            //password: await hash(password, 12),
+            email: email,
+            status: 'I',
+            roles: roles,
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName
+        });
+        signupReturn.errorCode = 0;
+        signupReturn.errorMessage = '';
+        await sess.commitTransaction();
+    } catch {
+        signupReturn.errorCode = 500;
+        signupReturn.errorMessage = 'Error Occurs';
     }
-
-    //check if role exists
-    const roles = await Role.find({ roleId: roleIds });
-    const resetPasswordToken = sign(
-        { "userId": userId },
-        process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY',
-        { expiresIn: '2d' }
-    );
-
-    if (!roles || roles.length === 0) {
-        signupReturn.errorCode = 404;
-        signupReturn.errorMessage = 'Role not found';
-        return signupReturn;
-    };
-    
-    await sendEmail("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-
-    //create user if not exist
-    await User.create({
-        userId: userId,
-        //password: await hash(password, 12),
-        email: email,
-        status: 'I',
-        roles: roles,
-        firstName: firstName,
-        middleName: middleName,
-        lastName: lastName
-    });
-    signupReturn.errorCode = 0;
-    signupReturn.errorMessage = '';
-    await sess.commitTransaction();
+    sess.endSession();
     return signupReturn;
 }
 
@@ -102,7 +110,6 @@ export async function getUserById(userId: string): Promise<UserReturn> {
     } catch {
         userReturn.errorCode = 500;
         userReturn.errorMessage = 'Error Occurs';
-        return userReturn;
     }
     return userReturn;
 }
@@ -123,7 +130,6 @@ export async function getUsers() {
     } catch {
         usersReturn.errorCode = 500;
         usersReturn.errorMessage = 'Error Occurs';
-        return usersReturn;
     }
 
     return usersReturn;
@@ -135,6 +141,9 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         errorCode: 500,
         errorMessage: 'Error Occurs'
     };
+
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
 
     try {
         const user = await User.findById(idKey);
@@ -164,20 +173,19 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         }
         if (roleIds && roleIds?.length > 0) {
             const roles = await Role.find({ roleId: roleIds });
-            if (roles && roles?.length > 0){
+            if (roles && roles?.length > 0) {
                 user.roles = roles.map(role => role._id);
             }
         }
         await user.save();
+        await sess.commitTransaction();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
-        return updateReturn
     } catch {
         updateReturn.errorCode = 500;
         updateReturn.errorMessage = 'Error Occurs';
-        return updateReturn;
     }
-
+    sess.endSession();
     return updateReturn;
 }
 
@@ -187,15 +195,19 @@ export async function deleteUser(_id: string): Promise<BasicReturn> {
         errorCode: 500,
         errorMessage: 'Error Occurs'
     };
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
 
     try {
-        await User.findByIdAndUpdate(_id, {status : "D"});
+        await User.findByIdAndUpdate(_id, { status: "D" });
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
+        await sess.commitTransaction();
     } catch {
         deleteReturn.errorCode = 500;
         deleteReturn.errorMessage = 'Error Occurs';
     }
+    sess.endSession();
     return deleteReturn;
 }
 
@@ -238,13 +250,13 @@ export async function resetPassword(userId: string, password: string, token: str
         user.password = await hash(password, 12);
         user.status = 'A';
         await user.save();
-        sess.commitTransaction();
+        await sess.commitTransaction();
         resetPasswordReturn.errorCode = 0;
         resetPasswordReturn.errorMessage = "";
     } catch {
         resetPasswordReturn.errorCode = 500;
         resetPasswordReturn.errorMessage = 'Error Occurs';
     }
-
+    sess.endSession();
     return resetPasswordReturn;
 }

@@ -23,43 +23,50 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const sess = yield mongoose_1.default.startSession();
-        sess.startTransaction();
         const signupReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
-        //check if user exist
-        const duplicatedUser = yield user_1.User.findOne({ $or: [{ userId: userId }, { email: email }] });
-        if (duplicatedUser && duplicatedUser.status !== 'D') {
-            signupReturn.errorCode = 409;
-            signupReturn.errorMessage = 'User already exists';
-            return signupReturn;
+        const sess = yield mongoose_1.default.startSession();
+        sess.startTransaction();
+        try {
+            //check if user exist
+            const duplicatedUser = yield user_1.User.findOne({ $or: [{ userId: userId }, { email: email }] });
+            if (duplicatedUser && duplicatedUser.status !== 'D') {
+                signupReturn.errorCode = 409;
+                signupReturn.errorMessage = 'User already exists';
+                return signupReturn;
+            }
+            //check if role exists
+            const roles = yield role_1.Role.find({ roleId: roleIds });
+            const resetPasswordToken = (0, jsonwebtoken_1.sign)({ "userId": userId }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '2d' });
+            if (!roles || roles.length === 0) {
+                signupReturn.errorCode = 404;
+                signupReturn.errorMessage = 'Role not found';
+                return signupReturn;
+            }
+            ;
+            yield (0, sendEmail_1.default)("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+            //create user if not exist
+            yield user_1.User.create({
+                userId: userId,
+                //password: await hash(password, 12),
+                email: email,
+                status: 'I',
+                roles: roles,
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName
+            });
+            signupReturn.errorCode = 0;
+            signupReturn.errorMessage = '';
+            yield sess.commitTransaction();
         }
-        //check if role exists
-        const roles = yield role_1.Role.find({ roleId: roleIds });
-        const resetPasswordToken = (0, jsonwebtoken_1.sign)({ "userId": userId }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '2d' });
-        if (!roles || roles.length === 0) {
-            signupReturn.errorCode = 404;
-            signupReturn.errorMessage = 'Role not found';
-            return signupReturn;
+        catch (_a) {
+            signupReturn.errorCode = 500;
+            signupReturn.errorMessage = 'Error Occurs';
         }
-        ;
-        yield (0, sendEmail_1.default)("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-        //create user if not exist
-        yield user_1.User.create({
-            userId: userId,
-            //password: await hash(password, 12),
-            email: email,
-            status: 'I',
-            roles: roles,
-            firstName: firstName,
-            middleName: middleName,
-            lastName: lastName
-        });
-        signupReturn.errorCode = 0;
-        signupReturn.errorMessage = '';
-        yield sess.commitTransaction();
+        sess.endSession();
         return signupReturn;
     });
 }
@@ -85,7 +92,6 @@ function getUserById(userId) {
         catch (_a) {
             userReturn.errorCode = 500;
             userReturn.errorMessage = 'Error Occurs';
-            return userReturn;
         }
         return userReturn;
     });
@@ -107,7 +113,6 @@ function getUsers() {
         catch (_a) {
             usersReturn.errorCode = 500;
             usersReturn.errorMessage = 'Error Occurs';
-            return usersReturn;
         }
         return usersReturn;
     });
@@ -119,6 +124,8 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
+        const sess = yield mongoose_1.default.startSession();
+        sess.startTransaction();
         try {
             const user = yield user_1.User.findById(idKey);
             if (!user) {
@@ -153,15 +160,15 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
                 }
             }
             yield user.save();
+            yield sess.commitTransaction();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";
-            return updateReturn;
         }
         catch (_a) {
             updateReturn.errorCode = 500;
             updateReturn.errorMessage = 'Error Occurs';
-            return updateReturn;
         }
+        sess.endSession();
         return updateReturn;
     });
 }
@@ -172,15 +179,19 @@ function deleteUser(_id) {
             errorCode: 500,
             errorMessage: 'Error Occurs'
         };
+        const sess = yield mongoose_1.default.startSession();
+        sess.startTransaction();
         try {
             yield user_1.User.findByIdAndUpdate(_id, { status: "D" });
             deleteReturn.errorCode = 0;
             deleteReturn.errorMessage = "";
+            yield sess.commitTransaction();
         }
         catch (_a) {
             deleteReturn.errorCode = 500;
             deleteReturn.errorMessage = 'Error Occurs';
         }
+        sess.endSession();
         return deleteReturn;
     });
 }
@@ -223,7 +234,7 @@ function resetPassword(userId, password, token) {
             user.password = yield (0, bcryptjs_1.hash)(password, 12);
             user.status = 'A';
             yield user.save();
-            sess.commitTransaction();
+            yield sess.commitTransaction();
             resetPasswordReturn.errorCode = 0;
             resetPasswordReturn.errorMessage = "";
         }
@@ -231,6 +242,7 @@ function resetPassword(userId, password, token) {
             resetPasswordReturn.errorCode = 500;
             resetPasswordReturn.errorMessage = 'Error Occurs';
         }
+        sess.endSession();
         return resetPasswordReturn;
     });
 }
