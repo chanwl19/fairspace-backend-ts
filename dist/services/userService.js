@@ -167,7 +167,7 @@ function deleteUser(_id) {
             errorMessage: 'Error Occurs'
         };
         try {
-            yield user_1.User.findByIdAndDelete(_id);
+            yield user_1.User.findByIdAndUpdate(_id, { status: "D" });
             deleteReturn.errorCode = 0;
             deleteReturn.errorMessage = "";
         }

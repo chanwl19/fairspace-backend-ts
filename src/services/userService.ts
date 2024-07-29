@@ -183,7 +183,7 @@ export async function deleteUser(_id: string): Promise<BasicReturn> {
     };
 
     try {
-        await User.findByIdAndDelete(_id);
+        await User.findByIdAndUpdate(_id, {status : "D"});
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
     } catch {
