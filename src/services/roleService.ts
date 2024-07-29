@@ -22,7 +22,7 @@ export async function getRoles() {
     };
 
     try {
-        const roles = await Role.find();
+        const roles = await Role.find().select('-endPoints');
         roleReturn.roles = roles;
         roleReturn.errorCode = 0;
         roleReturn.errorMessage = "";

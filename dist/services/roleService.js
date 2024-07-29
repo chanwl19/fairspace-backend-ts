@@ -24,7 +24,7 @@ function getRoles() {
             errorMessage: 'Error Occurs'
         };
         try {
-            const roles = yield role_1.Role.find();
+            const roles = yield role_1.Role.find().select('-endPoints');
             roleReturn.roles = roles;
             roleReturn.errorCode = 0;
             roleReturn.errorMessage = "";
