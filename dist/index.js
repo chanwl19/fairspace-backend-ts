@@ -10,6 +10,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const refreshRoute_1 = __importDefault(require("./routes/refreshRoute"));
+const roleRoute_1 = __importDefault(require("./routes/roleRoute"));
 const mongoose_1 = __importDefault(require("mongoose"));
 dotenv_1.default.config();
 const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
@@ -45,6 +46,8 @@ app.use('/refresh', refreshRoute_1.default);
 //Route user to userRoute
 //app.use('/user', authMiddleware.isAuthorized, userRoute);
 app.use('/user', userRoute_1.default);
+//Route role to roleRoute
+app.use('/role', roleRoute_1.default);
 //Catch error
 app.use((error, req, res, next) => {
     const status = error.statusCode || 500;

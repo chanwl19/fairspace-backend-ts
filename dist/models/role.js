@@ -15,8 +15,6 @@ const roleSchema = new mongoose_1.Schema({
             type: String
         }],
     pages: [{
-            menu: { type: String, required: true },
-            component: { type: String, required: true },
             path: { type: String, required: true }
         }]
 }, {

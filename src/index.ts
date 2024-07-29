@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
+import roleRoute from './routes/roleRoute'
 import { ApiError } from './models/apiError';
 import mongoose from 'mongoose';
 
@@ -51,6 +52,9 @@ app.use('/refresh', refreshRoute);
 //Route user to userRoute
 //app.use('/user', authMiddleware.isAuthorized, userRoute);
 app.use('/user',  userRoute);
+//Route role to roleRoute
+app.use('/role',  roleRoute);
+
 //Catch error
 app.use((error: ApiError, req: Request, res: Response, next: NextFunction) => {
   const status = error.statusCode || 500;
