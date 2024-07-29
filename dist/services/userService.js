@@ -146,6 +146,15 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
             if (lastName) {
                 user.middleName = lastName;
             }
+            if (roleIds && (roleIds === null || roleIds === void 0 ? void 0 : roleIds.length) > 0) {
+                const roles = yield role_1.Role.find({ roleId: roleIds });
+                if (roles && (roles === null || roles === void 0 ? void 0 : roles.length) > 0) {
+                    user.roles = roles.map(role => role._id);
+                }
+            }
+            else {
+                user.roles = [];
+            }
             yield user.save();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";

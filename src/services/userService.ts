@@ -162,6 +162,12 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
         if (lastName) {
             user.middleName = lastName;
         }
+        if (roleIds && roleIds?.length > 0) {
+            const roles = await Role.find({ roleId: roleIds });
+            user.roles = roles;
+        } else {
+            user.roles = [];
+        }
         await user.save();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
