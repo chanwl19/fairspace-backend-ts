@@ -8,35 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const nodemailer_1 = __importDefault(require("nodemailer"));
-function sendEmail(from, to, subject, content) {
+const resend_1 = require("resend");
+function sendEmail(from, to, subject, html) {
     return __awaiter(this, void 0, void 0, function* () {
-        const transporter = nodemailer_1.default.createTransport({
-            service: process.env.MAIL_HOST,
-            auth: {
-                user: process.env.MAIL_USERNAME,
-                pass: process.env.MAIL_PASSWORD
-            }
-        });
-        const mailOptions = {
-            from: from,
-            to: to,
-            subject: subject,
-            html: content
-        };
-        console.log("Before sendingemail ");
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log(error, " when sending email");
-            }
-            else {
-                console.log("successfully send email ");
-            }
-        });
+        try {
+            const resend = new resend_1.Resend(process.env.RESEND_API_KEY);
+            console.log(process.env.RESEND_API_KEY);
+            const result = yield resend.emails.send({
+                from: from,
+                to: to,
+                subject: subject,
+                html: html
+            });
+            console.log("Send email done ", result);
+        }
+        catch (err) {
+            console.log(err);
+        }
     });
 }
 exports.default = sendEmail;

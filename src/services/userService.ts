@@ -61,7 +61,8 @@ export async function signup(userId: string, password: string, email: string, ro
         signupReturn.errorMessage = 'Role not found';
         return signupReturn;
     };
-    await sendEmail("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+    
+    await sendEmail("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
 
     //create user if not exist
     await User.create({

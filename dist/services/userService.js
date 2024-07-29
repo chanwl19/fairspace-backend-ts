@@ -45,7 +45,7 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
             return signupReturn;
         }
         ;
-        yield (0, sendEmail_1.default)("donotreply@fairspace.com", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+        yield (0, sendEmail_1.default)("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
         //create user if not exist
         yield user_1.User.create({
             userId: userId,

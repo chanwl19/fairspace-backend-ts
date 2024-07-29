@@ -1,26 +1,17 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-export default async function sendEmail(from: string, to: string, subject: string, content: string) {
-    const transporter = nodemailer.createTransport({
-        service: process.env.MAIL_HOST,
-        auth: {
-            user: process.env.MAIL_USERNAME,
-            pass: process.env.MAIL_PASSWORD
-        }
-    });
-
-    const mailOptions = {
-        from: from,
-        to: to,
-        subject: subject,
-        html: content
-    };
-    console.log("Before sendingemail ")
-    transporter.sendMail(mailOptions, (error, info)=> {
-        if (error) {
-            console.log(error , " when sending email");
-        } else {
-            console.log("successfully send email ");
-        }
-    });
+export default async function sendEmail(from: string, to: string, subject: string, html: string) {
+    try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        console.log(process.env.RESEND_API_KEY)
+        const result = await resend.emails.send({
+            from: from,
+            to: to,
+            subject: subject,
+            html: html
+        });
+        console.log("Send email done ", result)
+    } catch (err) {
+        console.log(err)
+    }
 }
