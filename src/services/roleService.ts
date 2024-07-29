@@ -22,7 +22,7 @@ export async function getRoles() {
     };
 
     try {
-        const roles = await Role.find().select('-endPoints');
+        const roles = await Role.find({roleName : {$ne : 'Developer'}}).select('-endPoints');
         roleReturn.roles = roles;
         roleReturn.errorCode = 0;
         roleReturn.errorMessage = "";
