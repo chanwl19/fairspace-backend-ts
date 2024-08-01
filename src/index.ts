@@ -6,6 +6,8 @@ import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
 import roleRoute from './routes/roleRoute'
+import facilityRoute from './routes/facilityRoute';
+import reservationRoute from './routes/reservationRoute';
 import { ApiError } from './models/apiError';
 import mongoose from 'mongoose';
 
@@ -54,6 +56,10 @@ app.use('/refresh', refreshRoute);
 app.use('/user',  userRoute);
 //Route role to roleRoute
 app.use('/role',  roleRoute);
+//Route role to facilityRoute
+app.use('/facility',  facilityRoute);
+//Route role to reservationRoute
+app.use('/reservation',  reservationRoute);
 
 //Catch error
 app.use((error: ApiError, req: Request, res: Response, next: NextFunction) => {

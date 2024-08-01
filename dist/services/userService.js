@@ -46,18 +46,24 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
                 return signupReturn;
             }
             ;
-            yield (0, sendEmail_1.default)("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
             //create user if not exist
-            yield user_1.User.create({
-                userId: userId,
-                //password: await hash(password, 12),
-                email: email,
-                status: 'I',
-                roles: roles,
-                firstName: firstName,
-                middleName: middleName,
-                lastName: lastName
-            });
+            yield user_1.User.create([{
+                    userId: userId,
+                    //password: await hash(password, 12),
+                    email: email,
+                    status: 'I',
+                    roles: roles,
+                    firstName: firstName,
+                    middleName: middleName,
+                    lastName: lastName
+                }], { session: sess });
+            const isSendEmail = yield (0, sendEmail_1.default)("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+            console.log('isSendEmail ', isSendEmail);
+            if (!isSendEmail) {
+                signupReturn.errorCode = 500;
+                signupReturn.errorMessage = 'Cannot send email';
+                return signupReturn;
+            }
             signupReturn.errorCode = 0;
             signupReturn.errorMessage = '';
             yield sess.commitTransaction();
@@ -79,7 +85,7 @@ function getUserById(userId) {
             errorMessage: 'Error Occurs'
         };
         try {
-            const user = yield user_1.User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
+            const user = yield user_1.User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles').populate('reservations');
             if (!user) {
                 userReturn.errorCode = 404;
                 userReturn.errorMessage = 'User not found';
@@ -159,7 +165,7 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
                     user.roles = roles.map(role => role._id);
                 }
             }
-            yield user.save();
+            yield user.save({ session: sess });
             yield sess.commitTransaction();
             updateReturn.errorCode = 0;
             updateReturn.errorMessage = "";
@@ -182,7 +188,7 @@ function deleteUser(_id) {
         const sess = yield mongoose_1.default.startSession();
         sess.startTransaction();
         try {
-            yield user_1.User.findByIdAndUpdate(_id, { status: "D" });
+            yield user_1.User.findByIdAndUpdate(_id, { status: "D" }, { session: sess });
             deleteReturn.errorCode = 0;
             deleteReturn.errorMessage = "";
             yield sess.commitTransaction();
@@ -233,7 +239,7 @@ function resetPassword(userId, password, token) {
             }
             user.password = yield (0, bcryptjs_1.hash)(password, 12);
             user.status = 'A';
-            yield user.save();
+            yield user.save({ session: sess });
             yield sess.commitTransaction();
             resetPasswordReturn.errorCode = 0;
             resetPasswordReturn.errorMessage = "";

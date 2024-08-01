@@ -65,10 +65,8 @@ export async function signup(userId: string, password: string, email: string, ro
             return signupReturn;
         };
 
-        await sendEmail("FairSpace <onboarding@resend.dev>", "chaniphone19@icloud.com", "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-
         //create user if not exist
-        await User.create({
+        await User.create([{
             userId: userId,
             //password: await hash(password, 12),
             email: email,
@@ -77,7 +75,16 @@ export async function signup(userId: string, password: string, email: string, ro
             firstName: firstName,
             middleName: middleName,
             lastName: lastName
-        });
+        }], {session :sess});
+
+        const isSendEmail = await sendEmail("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+        console.log('isSendEmail ', isSendEmail)
+        if (!isSendEmail){
+            signupReturn.errorCode = 500;
+            signupReturn.errorMessage = 'Cannot send email';
+            return signupReturn;
+        }
+
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';
         await sess.commitTransaction();
@@ -98,7 +105,7 @@ export async function getUserById(userId: string): Promise<UserReturn> {
     };
 
     try {
-        const user = await User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
+        const user = await User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles').populate('reservations');
         if (!user) {
             userReturn.errorCode = 404;
             userReturn.errorMessage = 'User not found';
@@ -177,7 +184,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
                 user.roles = roles.map(role => role._id);
             }
         }
-        await user.save();
+        await user.save({session: sess});
         await sess.commitTransaction();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
@@ -199,7 +206,7 @@ export async function deleteUser(_id: string): Promise<BasicReturn> {
     sess.startTransaction();
 
     try {
-        await User.findByIdAndUpdate(_id, { status: "D" });
+        await User.findByIdAndUpdate(_id, { status: "D" }, {session: sess});
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
         await sess.commitTransaction();
@@ -249,7 +256,7 @@ export async function resetPassword(userId: string, password: string, token: str
 
         user.password = await hash(password, 12);
         user.status = 'A';
-        await user.save();
+        await user.save( {session: sess} );
         await sess.commitTransaction();
         resetPasswordReturn.errorCode = 0;
         resetPasswordReturn.errorMessage = "";
