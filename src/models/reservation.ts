@@ -17,9 +17,9 @@ const reservationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'facilities'
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'users'
+    userId: {
+        type: String,
+        required: true
     }
 },
 {

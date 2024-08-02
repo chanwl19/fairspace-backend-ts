@@ -13,3 +13,28 @@ export function checkSameDate(dateOne: Date, dateTwo: Date): boolean {
         return false;
     }
 }
+
+export function checkOverlappTime(existingStartDt: Date, existingEndDt: Date, inputStartDt: Date, inputEndDt: Date): boolean {
+
+    if (existingStartDt.getTime() <= inputStartDt.getTime() && existingEndDt.getTime() >= inputEndDt.getTime()) {
+        //case 1 new reservation is in the middle of an existing reservation
+        return true;
+    }
+
+    if (existingStartDt.getTime() >= inputStartDt.getTime() && existingEndDt.getTime() <= inputEndDt.getTime()) {
+        //case 2 new reservation covers an existing reservation
+        return true;
+    }
+
+    if (existingStartDt.getTime() > inputStartDt.getTime() && existingStartDt.getTime() < inputEndDt.getTime()) {
+        //case 3 new reservation end date overlaps with an exsiting reservation
+        return true;
+    }
+    
+    if (existingEndDt.getTime() > inputStartDt.getTime() && existingEndDt.getTime() < inputEndDt.getTime()) {
+        //case 4 new reservation start date overlaps with an exsiting reservation
+        return true;
+    }
+
+    return false;
+}

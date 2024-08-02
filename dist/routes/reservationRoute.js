@@ -28,6 +28,9 @@ const reservationController = __importStar(require("../controllers/reservationCo
 const reservationRouter = (0, express_1.Router)();
 //post request to post (create), get (get) and put (update) reservation
 reservationRouter.route('/')
+    .get(reservationController.getRservation)
     .post(reservationController.createReservation)
     .patch(reservationController.updateReservation);
+reservationRouter.route('/timeslot')
+    .get(reservationController.getAvailableTimeSlot);
 exports.default = reservationRouter;

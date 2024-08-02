@@ -19,9 +19,9 @@ const reservationSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'facilities'
     },
-    user: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'users'
+    userId: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true,
