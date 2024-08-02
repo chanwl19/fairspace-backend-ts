@@ -190,7 +190,7 @@ function getReservation(userId) {
     });
 }
 exports.getReservation = getReservation;
-function getAvailableTimeSlot(facilityType, reserveDate) {
+function getAvailableTimeSlot(facilityType, reserveDate, reservationId) {
     return __awaiter(this, void 0, void 0, function* () {
         const getAvailableFacilityReturn = {
             facilityAvailableTimeSlots: [],
@@ -217,14 +217,18 @@ function getAvailableTimeSlot(facilityType, reserveDate) {
                 facilityCloseDt.setHours(closeTimes[0], closeTimes[1], 0, 0);
                 reserveDateLowerBound.setHours(0, 0, 0, 0);
                 reserveDateUpperBound.setDate(reserveDateLowerBound.getDate() + 1);
-                const existingReservations = yield reservation_1.Reservation.find({ facility: facility, status: 'A', reserveStartTime: { $gte: reserveDateLowerBound, $lt: reserveDateUpperBound } });
+                const existingReservations = yield reservation_1.Reservation.find({
+                    facility: facility, status: 'A',
+                    reserveStartTime: { $gte: reserveDateLowerBound, $lt: reserveDateUpperBound }
+                });
                 const reserveStartDt = new Date(facilityOpenDt.getTime());
                 const reserveEndDt = new Date(facilityOpenDt.getTime());
                 while (reserveStartDt < facilityCloseDt) {
                     reserveEndDt.setMinutes(reserveStartDt.getMinutes() + 30);
                     if (existingReservations && existingReservations.length > 0) {
                         const overLappedReservations = existingReservations.filter(existingReservation => {
-                            return (0, dateUtils_1.checkOverlappTime)(existingReservation.reserveStartTime, existingReservation.reserveEndTime, new Date(reserveStartDt.getTime()), new Date(reserveEndDt.getTime()));
+                            return ((0, dateUtils_1.checkOverlappTime)(existingReservation.reserveStartTime, existingReservation.reserveEndTime, new Date(reserveStartDt.getTime()), new Date(reserveEndDt.getTime()))
+                                && existingReservation._id.toString() !== reservationId);
                         });
                         if (overLappedReservations && overLappedReservations.length > 0) {
                             reserveStartDt.setMinutes(reserveStartDt.getMinutes() + 30);

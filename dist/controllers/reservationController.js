@@ -118,6 +118,7 @@ function getAvailableTimeSlot(req, res, next) {
         try {
             const facilityType = req.query.facilityType;
             const reserveDateStr = req.query.reserveDate;
+            const reservationIdStr = req.query.reservationId;
             if (!facilityType || !reserveDateStr) {
                 return next(new apiError_1.ApiError('Facilty Type and Reserve Date cannot be empty', 404, []));
             }
@@ -128,7 +129,11 @@ function getAvailableTimeSlot(req, res, next) {
             if (isNaN(reserveDate.getTime())) {
                 return next(new apiError_1.ApiError('Invalid Reserve Date format', 500, []));
             }
-            const response = yield reservationService.getAvailableTimeSlot(facilityType.toString(), reserveDate);
+            let reservationId = '1';
+            if (reservationIdStr) {
+                reservationId = reservationIdStr.toString();
+            }
+            const response = yield reservationService.getAvailableTimeSlot(facilityType.toString(), reserveDate, reservationId);
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }

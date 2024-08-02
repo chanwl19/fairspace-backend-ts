@@ -96,6 +96,7 @@ export async function getAvailableTimeSlot(req: Request, res: Response, next: Ne
     
         const facilityType = req.query.facilityType;
         const reserveDateStr = req.query.reserveDate;
+        const reservationIdStr = req.query.reservationId;
 
         if (!facilityType || !reserveDateStr) {
             return next(new ApiError('Facilty Type and Reserve Date cannot be empty', 404, []));
@@ -106,11 +107,16 @@ export async function getAvailableTimeSlot(req: Request, res: Response, next: Ne
         }
 
         const reserveDate = new Date(reserveDateStr.toString());
-       if (isNaN(reserveDate.getTime())) {
+        if (isNaN(reserveDate.getTime())) {
             return next(new ApiError('Invalid Reserve Date format', 500, []));
         }
 
-        const response = await reservationService.getAvailableTimeSlot(facilityType.toString(), reserveDate);
+        let reservationId = '1';
+        if (reservationIdStr) {
+            reservationId = reservationIdStr.toString();
+        }
+
+        const response = await reservationService.getAvailableTimeSlot(facilityType.toString(), reserveDate, reservationId);
 
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));

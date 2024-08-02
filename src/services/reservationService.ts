@@ -205,7 +205,7 @@ export async function getReservation(userId: string): Promise<GetReservationRetu
     return getReservationReturn;
 }
 
-export async function getAvailableTimeSlot(facilityType: string, reserveDate: Date): Promise<GetAvailableFacilityReturn> {
+export async function getAvailableTimeSlot(facilityType: string, reserveDate: Date, reservationId: string): Promise<GetAvailableFacilityReturn> {
     const getAvailableFacilityReturn: GetAvailableFacilityReturn = {
         facilityAvailableTimeSlots: [],
         errorCode: 500,
@@ -222,7 +222,6 @@ export async function getAvailableTimeSlot(facilityType: string, reserveDate: Da
             getAvailableFacilityReturn.errorMessage = 'No facility not found';
             return getAvailableFacilityReturn;
         }
-
         await Promise.all(facilities.map(async facility => {
             const facilityOpenDt = new Date(reserveDate.getTime());
             const facilityCloseDt = new Date(reserveDate.getTime());
@@ -235,7 +234,10 @@ export async function getAvailableTimeSlot(facilityType: string, reserveDate: Da
             facilityCloseDt.setHours(closeTimes[0], closeTimes[1], 0, 0);
             reserveDateLowerBound.setHours(0, 0, 0, 0);
             reserveDateUpperBound.setDate(reserveDateLowerBound.getDate() + 1);
-            const existingReservations = await Reservation.find({ facility: facility, status: 'A', reserveStartTime: { $gte: reserveDateLowerBound, $lt: reserveDateUpperBound } });
+            const existingReservations = await Reservation.find({
+                facility: facility, status: 'A',
+                reserveStartTime: { $gte: reserveDateLowerBound, $lt: reserveDateUpperBound }
+            });
             const reserveStartDt = new Date(facilityOpenDt.getTime());
             const reserveEndDt = new Date(facilityOpenDt.getTime());
 
@@ -243,8 +245,9 @@ export async function getAvailableTimeSlot(facilityType: string, reserveDate: Da
                 reserveEndDt.setMinutes(reserveStartDt.getMinutes() + 30);
                 if (existingReservations && existingReservations.length > 0) {
                     const overLappedReservations = existingReservations.filter(existingReservation => {
-                        return checkOverlappTime(existingReservation.reserveStartTime, existingReservation.reserveEndTime,
-                            new Date(reserveStartDt.getTime()), new Date(reserveEndDt.getTime()));
+                        return (checkOverlappTime(existingReservation.reserveStartTime, existingReservation.reserveEndTime,
+                            new Date(reserveStartDt.getTime()), new Date(reserveEndDt.getTime()))
+                            && existingReservation._id.toString() !== reservationId);
                     });
                     if (overLappedReservations && overLappedReservations.length > 0) {
                         reserveStartDt.setMinutes(reserveStartDt.getMinutes() + 30);
