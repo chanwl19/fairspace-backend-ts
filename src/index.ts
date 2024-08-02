@@ -10,6 +10,7 @@ import facilityRoute from './routes/facilityRoute';
 import reservationRoute from './routes/reservationRoute';
 import { ApiError } from './models/apiError';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
 
 import * as authMiddleware from './middlewares/authorize';
 
@@ -46,6 +47,8 @@ app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
 
+//Use helmet
+app.use(helmet());
 
 //Route login to authRoute
 app.use('/auth', authRoute);

@@ -14,6 +14,7 @@ const roleRoute_1 = __importDefault(require("./routes/roleRoute"));
 const facilityRoute_1 = __importDefault(require("./routes/facilityRoute"));
 const reservationRoute_1 = __importDefault(require("./routes/reservationRoute"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const helmet_1 = __importDefault(require("helmet"));
 dotenv_1.default.config();
 const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
@@ -41,6 +42,8 @@ app.use(express_1.default.urlencoded());
 app.use(express_1.default.json());
 //middleware for cookies
 app.use((0, cookie_parser_1.default)());
+//Use helmet
+app.use((0, helmet_1.default)());
 //Route login to authRoute
 app.use('/auth', authRoute_1.default);
 //Route refresh to refreshRoute
