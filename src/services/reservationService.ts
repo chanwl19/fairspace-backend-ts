@@ -195,7 +195,6 @@ export async function getReservation(userId: string): Promise<GetReservationRetu
     try {
         //check find reservation base on userId
         const reservations = await Reservation.find({ userId: userId, status: { $ne: 'D' } }).populate('facility').sort({ reserveStartTime: 1 });
-        console.log('reservations ',)
         getReservationReturn.reservations = reservations;
         getReservationReturn.errorCode = 0;
         getReservationReturn.errorMessage = '';
