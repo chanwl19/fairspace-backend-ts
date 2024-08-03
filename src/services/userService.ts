@@ -3,10 +3,11 @@ import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
 import { encrypt } from '../middlewares/encryptText';
 import dotenv from 'dotenv';
-import { uploadFile, uploadImage } from '../middlewares/fileUpload';
+import { uploadImage } from '../middlewares/fileUpload';
 import sendEmail from '../middlewares/sendEmail';
 import mongoose from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
+import axios from 'axios';
 
 
 dotenv.config();
@@ -75,15 +76,33 @@ export async function signup(userId: string, password: string, email: string, ro
             firstName: firstName,
             middleName: middleName,
             lastName: lastName
-        }], {session :sess});
+        }], { session: sess });
 
-        const isSendEmail = await sendEmail("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-        console.log('isSendEmail ', isSendEmail)
-        if (!isSendEmail){
+        try {
+            await axios.post(process.env.EMAIL_URL || '', JSON.stringify({
+                'from': "FairSpace <donotreply@fairspace.com>",
+                'to': email,
+                'subject': "Welcome to FairSpace",
+                'content': "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>"
+            }),
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+        } catch (err) {
+            console.log(err)
             signupReturn.errorCode = 500;
             signupReturn.errorMessage = 'Cannot send email';
             return signupReturn;
         }
+        // const isSendEmail = await sendEmail("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+        // console.log('isSendEmail ', isSendEmail)
+        // if (!isSendEmail){
+        //     signupReturn.errorCode = 500;
+        //     signupReturn.errorMessage = 'Cannot send email';
+        //     return signupReturn;
+        // }
 
         signupReturn.errorCode = 0;
         signupReturn.errorMessage = '';
@@ -184,7 +203,7 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
                 user.roles = roles.map(role => role._id);
             }
         }
-        await user.save({session: sess});
+        await user.save({ session: sess });
         await sess.commitTransaction();
         updateReturn.errorCode = 0;
         updateReturn.errorMessage = "";
@@ -206,7 +225,7 @@ export async function deleteUser(_id: string): Promise<BasicReturn> {
     sess.startTransaction();
 
     try {
-        await User.findByIdAndUpdate(_id, { status: "D" }, {session: sess});
+        await User.findByIdAndUpdate(_id, { status: "D" }, { session: sess });
         deleteReturn.errorCode = 0;
         deleteReturn.errorMessage = "";
         await sess.commitTransaction();
@@ -256,7 +275,7 @@ export async function resetPassword(userId: string, password: string, token: str
 
         user.password = await hash(password, 12);
         user.status = 'A';
-        await user.save( {session: sess} );
+        await user.save({ session: sess });
         await sess.commitTransaction();
         resetPasswordReturn.errorCode = 0;
         resetPasswordReturn.errorMessage = "";

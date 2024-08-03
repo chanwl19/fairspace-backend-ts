@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Request } from "express";
 import dotenv from 'dotenv';
 import getGCPCredentials from '../middlewares/gcpCredentials';
-import { Storage } from '@google-cloud/storage';
+//import { Storage } from '@google-cloud/storage';
 import { put } from '@vercel/blob';
 
 dotenv.config();
@@ -33,22 +33,22 @@ export const fileHandler = multer({
   }
 });
 
-export async function uploadFile(image: Express.Multer.File) {
-  try {
-    const storage = new Storage(getGCPCredentials());
-    const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
-    const extArray = image.mimetype.split("/");
-    const extension = extArray[extArray.length - 1];
-    const fileName = uuidv4() + '.' + extension;
-    const buffer = image.buffer;
-    console.log("buffer ");
-    await bucket.file(fileName).save(Buffer.from(buffer));
-    return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
-  } catch (error) {
-    console.log("Error ", error);
-    return "";
-  }
-}
+// export async function uploadFile(image: Express.Multer.File) {
+//   try {
+//     const storage = new Storage(getGCPCredentials());
+//     const bucket = storage.bucket(process.env.BUCKET_NAME || 'fairspace_image');
+//     const extArray = image.mimetype.split("/");
+//     const extension = extArray[extArray.length - 1];
+//     const fileName = uuidv4() + '.' + extension;
+//     const buffer = image.buffer;
+//     console.log("buffer ");
+//     await bucket.file(fileName).save(Buffer.from(buffer));
+//     return process.env.GCP_URL_PREFIX || 'https://storage.cloud.google.com/fairspace_image/' + fileName;
+//   } catch (error) {
+//     console.log("Error ", error);
+//     return "";
+//   }
+// }
 
 export async function uploadImage(file: Express.Multer.File) {
   let blob;

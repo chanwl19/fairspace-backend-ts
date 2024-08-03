@@ -17,9 +17,9 @@ const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
-const sendEmail_1 = __importDefault(require("../middlewares/sendEmail"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const jsonwebtoken_1 = require("jsonwebtoken");
+const axios_1 = __importDefault(require("axios"));
 dotenv_1.default.config();
 function signup(userId, password, email, roleIds, firstName, middleName, lastName, phoneNo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -57,13 +57,31 @@ function signup(userId, password, email, roleIds, firstName, middleName, lastNam
                     middleName: middleName,
                     lastName: lastName
                 }], { session: sess });
-            const isSendEmail = yield (0, sendEmail_1.default)("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
-            console.log('isSendEmail ', isSendEmail);
-            if (!isSendEmail) {
+            try {
+                yield axios_1.default.post(process.env.EMAIL_URL || '', JSON.stringify({
+                    'from': "FairSpace <donotreply@fairspace.com>",
+                    'to': email,
+                    'subject': "Welcome to FairSpace",
+                    'content': "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>"
+                }), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
                 signupReturn.errorCode = 500;
                 signupReturn.errorMessage = 'Cannot send email';
                 return signupReturn;
             }
+            // const isSendEmail = await sendEmail("FairSpace <donotreply@fairspace.com>", email, "Welcome to FairSpace", "<h1>Welcome to FairSpace</h1><p>Please set your new password at <a href='https://fairspace.netlify.app/resetPassword?token=" + resetPasswordToken + "'>Reset Password</a></p>");
+            // console.log('isSendEmail ', isSendEmail)
+            // if (!isSendEmail){
+            //     signupReturn.errorCode = 500;
+            //     signupReturn.errorMessage = 'Cannot send email';
+            //     return signupReturn;
+            // }
             signupReturn.errorCode = 0;
             signupReturn.errorMessage = '';
             yield sess.commitTransaction();
