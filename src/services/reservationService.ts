@@ -13,10 +13,14 @@ interface GetReservationReturn extends BasicReturn {
     reservations: InstanceType<typeof Reservation>[];
 }
 
-interface FacilityAvailableTimeSlot {
-    facility: InstanceType<typeof Facility>;
+interface TimeSlot {
     startDt: Date;
     endDt: Date;
+}
+
+interface FacilityAvailableTimeSlot {
+    facility: InstanceType<typeof Facility>;
+    timeSlots: TimeSlot[]
 }
 
 interface GetAvailableFacilityReturn extends BasicReturn {
@@ -223,6 +227,10 @@ export async function getAvailableTimeSlot(facilityType: string, reserveDate: Da
             return getAvailableFacilityReturn;
         }
         await Promise.all(facilities.map(async facility => {
+            const facilityAvailableTimeSlot: FacilityAvailableTimeSlot = {
+                facility: facility,
+                timeSlots: []
+            };
             const facilityOpenDt = new Date(reserveDate.getTime());
             const facilityCloseDt = new Date(reserveDate.getTime());
             const reserveDateLowerBound = new Date(reserveDate.getTime());
@@ -254,15 +262,15 @@ export async function getAvailableTimeSlot(facilityType: string, reserveDate: Da
                         continue;
                     }
                 }
-                const avaliableTimeSlot: FacilityAvailableTimeSlot = {
-                    facility: facility,
+                const timeSlot: TimeSlot = {
                     startDt: new Date(reserveStartDt.getTime()),
                     endDt: new Date(reserveEndDt.getTime())
                 };
-                facilityAvailableTimeSlots.push(avaliableTimeSlot);
-                getAvailableFacilityReturn.facilityAvailableTimeSlots.push(avaliableTimeSlot);
+                facilityAvailableTimeSlot.timeSlots.push(timeSlot);
                 reserveStartDt.setMinutes(reserveStartDt.getMinutes() + 30);
             }
+            facilityAvailableTimeSlots.push(facilityAvailableTimeSlot);
+            getAvailableFacilityReturn.facilityAvailableTimeSlots = facilityAvailableTimeSlots;
         }))
 
         getAvailableFacilityReturn.facilityAvailableTimeSlots = facilityAvailableTimeSlots;

@@ -207,6 +207,10 @@ function getAvailableTimeSlot(facilityType, reserveDate, reservationId) {
                 return getAvailableFacilityReturn;
             }
             yield Promise.all(facilities.map((facility) => __awaiter(this, void 0, void 0, function* () {
+                const facilityAvailableTimeSlot = {
+                    facility: facility,
+                    timeSlots: []
+                };
                 const facilityOpenDt = new Date(reserveDate.getTime());
                 const facilityCloseDt = new Date(reserveDate.getTime());
                 const reserveDateLowerBound = new Date(reserveDate.getTime());
@@ -235,15 +239,15 @@ function getAvailableTimeSlot(facilityType, reserveDate, reservationId) {
                             continue;
                         }
                     }
-                    const avaliableTimeSlot = {
-                        facility: facility,
+                    const timeSlot = {
                         startDt: new Date(reserveStartDt.getTime()),
                         endDt: new Date(reserveEndDt.getTime())
                     };
-                    facilityAvailableTimeSlots.push(avaliableTimeSlot);
-                    getAvailableFacilityReturn.facilityAvailableTimeSlots.push(avaliableTimeSlot);
+                    facilityAvailableTimeSlot.timeSlots.push(timeSlot);
                     reserveStartDt.setMinutes(reserveStartDt.getMinutes() + 30);
                 }
+                facilityAvailableTimeSlots.push(facilityAvailableTimeSlot);
+                getAvailableFacilityReturn.facilityAvailableTimeSlots = facilityAvailableTimeSlots;
             })));
             getAvailableFacilityReturn.facilityAvailableTimeSlots = facilityAvailableTimeSlots;
             getAvailableFacilityReturn.errorCode = 0;
