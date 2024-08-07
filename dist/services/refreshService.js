@@ -29,7 +29,6 @@ function refreshToken(token) {
         const foundUser = yield user_1.User.findOne({ refreshToken: token }).populate('roles');
         // Detected refresh token reuse!
         if (!foundUser) {
-            console.log("NO user found");
             try {
                 tokenReturn.errorCode = 403;
                 tokenReturn.errorMessage = 'Forbidden Error';
@@ -81,9 +80,9 @@ function refreshToken(token) {
             const accessToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId, "roles": foundUser.roles }, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY', { expiresIn: '10s' });
             const newRefreshToken = (0, jsonwebtoken_1.sign)({ "userId": foundUser.userId }, process.env.REFRESH_KEY || 'MY_SECRET_REFRESH_KEY', { expiresIn: '1d' });
             foundUser.refreshToken = newRefreshToken;
-            console.log("update user founduser ", foundUser);
-            const saveUser = yield foundUser.save();
-            console.log("return result ", saveUser);
+            yield foundUser.save();
+            foundUser.password = "";
+            foundUser.refreshToken = '';
             tokenReturn.errorCode = 0;
             tokenReturn.errorMessage = '';
             tokenReturn.accessToken = accessToken;
@@ -92,7 +91,6 @@ function refreshToken(token) {
             return tokenReturn;
         }
         catch (_b) {
-            console.log("Exception");
             if (foundUser) {
                 foundUser.refreshToken = "";
                 yield foundUser.save();

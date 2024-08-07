@@ -30,7 +30,6 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
     const foundUser = await User.findOne({ refreshToken: token }).populate('roles');
     // Detected refresh token reuse!
     if (!foundUser) {
-        console.log("NO user found");
         try {
             tokenReturn.errorCode = 403;
             tokenReturn.errorMessage = 'Forbidden Error';
@@ -92,10 +91,10 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         );
         foundUser.refreshToken = newRefreshToken;
         
-        console.log("update user founduser ", foundUser);
-        const saveUser = await foundUser.save();
-        console.log("return result ", saveUser);
+        await foundUser.save();
 
+        foundUser.password = "";
+        foundUser.refreshToken = '';
         tokenReturn.errorCode = 0;
         tokenReturn.errorMessage = '';
         tokenReturn.accessToken = accessToken;
@@ -103,7 +102,6 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         tokenReturn.user = foundUser;
         return tokenReturn;
     } catch {
-        console.log("Exception")
         if (foundUser) {
             foundUser.refreshToken = "";
             await foundUser.save();
