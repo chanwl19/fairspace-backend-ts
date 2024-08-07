@@ -130,7 +130,7 @@ function getFacility() {
         sess.startTransaction();
         try {
             //get all facilities 
-            const facilities = yield facility_1.Facility.find({ status: 'A' });
+            const facilities = yield facility_1.Facility.find();
             getFacilityReturn.facilities = facilities;
             getFacilityReturn.errorCode = 0;
             getFacilityReturn.errorMessage = '';

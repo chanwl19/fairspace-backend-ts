@@ -124,7 +124,7 @@ export async function getFacility(): Promise<FacilitiesReturn> {
 
     try {
         //get all facilities 
-        const facilities = await Facility.find({status: 'A'});
+        const facilities = await Facility.find();
         getFacilityReturn.facilities = facilities;
         getFacilityReturn.errorCode = 0;
         getFacilityReturn.errorMessage = '';
