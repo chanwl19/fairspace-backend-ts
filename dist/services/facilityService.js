@@ -148,6 +148,7 @@ function getFacility() {
 exports.getFacility = getFacility;
 function deleteFacility(_id) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("In service _id ", _id);
         const deleteFacilityReturn = {
             errorCode: 500,
             errorMessage: 'Error Occurs'
@@ -157,6 +158,7 @@ function deleteFacility(_id) {
         try {
             //get all facilities 
             const facilities = yield facility_1.Facility.findByIdAndUpdate(_id, { status: "D" }, { session: sess });
+            console.log("In service delete ", facilities);
             deleteFacilityReturn.errorCode = 0;
             deleteFacilityReturn.errorMessage = '';
             sess.commitTransaction();

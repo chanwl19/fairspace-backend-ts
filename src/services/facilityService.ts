@@ -138,7 +138,7 @@ export async function getFacility(): Promise<FacilitiesReturn> {
 }
 
 export async function deleteFacility(_id: string): Promise<BasicReturn> {
-
+    console.log("In service _id ", _id)
     const deleteFacilityReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -148,6 +148,7 @@ export async function deleteFacility(_id: string): Promise<BasicReturn> {
     try {
         //get all facilities 
         const facilities = await Facility.findByIdAndUpdate(_id, { status: "D" },{session: sess});
+        console.log("In service delete ", facilities);
         deleteFacilityReturn.errorCode = 0;
         deleteFacilityReturn.errorMessage = '';
         sess.commitTransaction();
