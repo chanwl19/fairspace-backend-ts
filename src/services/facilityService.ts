@@ -138,7 +138,6 @@ export async function getFacility(): Promise<FacilitiesReturn> {
 }
 
 export async function deleteFacility(_id: string): Promise<BasicReturn> {
-    console.log("In service _id ", _id)
     const deleteFacilityReturn: BasicReturn = {
         errorCode: 500,
         errorMessage: 'Error Occurs'
@@ -147,11 +146,10 @@ export async function deleteFacility(_id: string): Promise<BasicReturn> {
     sess.startTransaction();
     try {
         //get all facilities 
-        const facilities = await Facility.findByIdAndUpdate(_id, { status: "D" },{session: sess});
-        console.log("In service delete ", facilities);
+        const facilities = await Facility.findByIdAndUpdate(_id, { status: "D" },{ session: sess});
         deleteFacilityReturn.errorCode = 0;
         deleteFacilityReturn.errorMessage = '';
-        sess.commitTransaction();
+        await sess.commitTransaction();
     } catch {
         deleteFacilityReturn.errorCode = 500;
         deleteFacilityReturn.errorMessage = 'Error Occurs';

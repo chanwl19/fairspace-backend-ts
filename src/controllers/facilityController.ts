@@ -57,7 +57,6 @@ export async function getFacility(req: Request, res: Response, next: NextFunctio
 
 export async function deleteFacility(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        console.log("Id in controller is  ", req.body._id);
         const response = await facilityService.deleteFacility(req.body._id);
 
         if (response.errorCode !== 0) {

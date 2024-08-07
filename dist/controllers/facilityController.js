@@ -92,7 +92,6 @@ exports.getFacility = getFacility;
 function deleteFacility(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log("Id in controller is  ", req.body._id);
             const response = yield facilityService.deleteFacility(req.body._id);
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
