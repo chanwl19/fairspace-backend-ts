@@ -22,7 +22,7 @@ function isAuthorized(req, res, next) {
         var _a;
         try {
             if (req.originalUrl === '/user/resetPassword') {
-                next();
+                return next();
             }
             const header = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.authorization;
             if (!header) {
