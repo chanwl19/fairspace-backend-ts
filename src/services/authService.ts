@@ -41,7 +41,7 @@ export async function login(userId: string, password: string): Promise<LoginRetu
     const accessToken = sign(
         { "userId": user.userId, "roles": user.roles },
         process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY',
-        { expiresIn: '10s' }
+        { expiresIn: '5m' }
     );
     const refreshToken = sign(
         { "userId": user.userId },

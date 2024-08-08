@@ -159,8 +159,10 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
                 return updateReturn;
             }
             ;
-            const blob = yield (0, fileUpload_1.uploadImage)(image);
-            user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
+            if (image) {
+                const blob = yield (0, fileUpload_1.uploadImage)(image);
+                user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
+            }
             user.email = email;
             user.firstName = firstName;
             user.middleName = middleName;

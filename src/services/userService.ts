@@ -176,8 +176,10 @@ export async function updateUser(image: Express.Multer.File, idKey: string, pass
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-        const blob = await uploadImage(image);
-        user.image = blob?.downloadUrl;
+        if (image){
+            const blob = await uploadImage(image);
+            user.image = blob?.downloadUrl;
+        }
         user.email = email;
         user.firstName = firstName;
         user.middleName = middleName;
