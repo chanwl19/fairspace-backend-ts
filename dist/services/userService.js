@@ -152,6 +152,7 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
         const sess = yield mongoose_1.default.startSession();
         sess.startTransaction();
         try {
+            console.log("idKey ", idKey, " email ", email, " roleIds ", roleIds, " password ", password, " firstName ", firstName, " middleName ", middleName, " lastName ", lastName);
             const user = yield user_1.User.findById(idKey);
             if (!user) {
                 updateReturn.errorCode = 404;
@@ -159,6 +160,7 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
                 return updateReturn;
             }
             ;
+            console.log('user ', user);
             if (image) {
                 const blob = yield (0, fileUpload_1.uploadImage)(image);
                 user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
@@ -181,6 +183,7 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
                     user.roles = roles.map(role => role._id);
                 }
             }
+            console.log('user after update ', user);
             yield user.save({ session: sess });
             yield sess.commitTransaction();
             updateReturn.errorCode = 0;
