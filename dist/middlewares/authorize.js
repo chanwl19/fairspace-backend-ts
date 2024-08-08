@@ -32,7 +32,7 @@ function isAuthorized(req, res, next) {
             if (!roles) {
                 throw new apiError_1.ApiError("Forbidden", 403, []);
             }
-            const isAllowAccess = checkAllowAccess(roles, req.originalUrl, req.method);
+            const isAllowAccess = checkAllowAccess(roles, req.originalUrl.split('?')[0], req.method);
             if (!isAllowAccess) {
                 throw new apiError_1.ApiError("Forbidden", 403, []);
             }

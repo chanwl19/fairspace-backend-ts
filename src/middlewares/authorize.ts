@@ -30,7 +30,7 @@ export async function isAuthorized(req: Request, res : Response, next : NextFunc
         if (!roles) {
             throw new ApiError("Forbidden", 403, []);
         }
-        const isAllowAccess = checkAllowAccess(roles, req.originalUrl, req.method);
+        const isAllowAccess = checkAllowAccess(roles, req.originalUrl.split('?')[0], req.method);
         if (!isAllowAccess) {
             throw new ApiError("Forbidden", 403, []);
         } else {
