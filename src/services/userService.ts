@@ -161,7 +161,7 @@ export async function getUsers() {
     return usersReturn;
 }
 
-export async function updateUser(phoneNo: string, image: Express.Multer.File, idKey: string, password: string,
+export async function updateUser(image: Express.Multer.File, idKey: string, password: string,
     email: string, roleIds: number[], firstName: string, middleName: string, lastName: string): Promise<BasicReturn> {
     const updateReturn: BasicReturn = {
         errorCode: 500,

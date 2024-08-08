@@ -143,7 +143,7 @@ function getUsers() {
     });
 }
 exports.getUsers = getUsers;
-function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, middleName, lastName) {
+function updateUser(image, idKey, password, email, roleIds, firstName, middleName, lastName) {
     return __awaiter(this, void 0, void 0, function* () {
         const updateReturn = {
             errorCode: 500,

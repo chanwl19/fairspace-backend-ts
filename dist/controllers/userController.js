@@ -103,7 +103,7 @@ function updateUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const file = req.file;
-            const response = yield userService.updateUser(req.body.phoneNo, file, req.body._id.toString(), req.body.password, req.body.email, req.body.roleIds, req.body.firstName, req.body.middleName, req.body.lastName);
+            const response = yield userService.updateUser(file, req.body._id.toString(), req.body.password, req.body.email, req.body.roleIds, req.body.firstName, req.body.middleName, req.body.lastName);
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }
