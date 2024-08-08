@@ -182,9 +182,6 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             const blob = await uploadImage(image);
             user.image = blob?.downloadUrl;
         }
-        if (phoneNo) {
-            user.phoneNo = phoneNo;
-        }
         if (email) {
             user.email = email;
         }

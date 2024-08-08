@@ -163,9 +163,6 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
                 const blob = yield (0, fileUpload_1.uploadImage)(image);
                 user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
             }
-            if (phoneNo) {
-                user.phoneNo = phoneNo;
-            }
             if (email) {
                 user.email = email;
             }
