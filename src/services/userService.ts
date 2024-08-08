@@ -172,14 +172,12 @@ export async function updateUser(image: Express.Multer.File, idKey: string, pass
     sess.startTransaction();
 
     try {
-        console.log("idKey ", idKey, " email ", email, " roleIds ", roleIds, " password ", password, " firstName ", firstName, " middleName ", middleName, " lastName ", lastName)
         const user = await User.findById(idKey);
         if (!user) {
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-        console.log('user ', user);
         const blob = await uploadImage(image);
         user.image = blob?.downloadUrl;
         user.email = email;
@@ -193,7 +191,6 @@ export async function updateUser(image: Express.Multer.File, idKey: string, pass
                 user.roles = roles.map(role => role._id);
             }
         }
-        console.log('user after update ', user);
         await user.save({ session: sess });
         await sess.commitTransaction();
         updateReturn.errorCode = 0;
