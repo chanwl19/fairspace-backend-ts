@@ -175,7 +175,7 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
                 user.middleName = middleName;
             }
             if (lastName) {
-                user.middleName = lastName;
+                user.lastName = lastName;
             }
             if (roleIds && (roleIds === null || roleIds === void 0 ? void 0 : roleIds.length) > 0) {
                 const roles = yield role_1.Role.find({ roleId: roleIds });

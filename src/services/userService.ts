@@ -194,7 +194,7 @@ export async function updateUser(image: Express.Multer.File, idKey: string, pass
             user.middleName = middleName;
         }
         if (lastName) {
-            user.middleName = lastName;
+            user.lastName = lastName;
         }
         if (roleIds && roleIds?.length > 0) {
             const roles = await Role.find({ roleId: roleIds });
