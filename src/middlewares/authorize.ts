@@ -15,6 +15,11 @@ interface TokenInterface {
 
 export async function isAuthorized(req: Request, res : Response, next : NextFunction):Promise<void> {
     try {
+        
+        if (req.originalUrl === '/user/resetPassword') {
+            next();
+        }
+
         const header = req.headers?.authorization;
         if (!header) {
             return next(new ApiError("Unauthoized", 401, []));

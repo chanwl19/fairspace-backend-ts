@@ -21,6 +21,9 @@ function isAuthorized(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
+            if (req.originalUrl === '/user/resetPassword') {
+                next();
+            }
             const header = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.authorization;
             if (!header) {
                 return next(new apiError_1.ApiError("Unauthoized", 401, []));
