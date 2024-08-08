@@ -22,12 +22,10 @@ function isAuthorized(req, res, next) {
         var _a;
         try {
             const header = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.authorization;
-            console.log('headers ', req.headers);
             if (!header) {
                 return next(new apiError_1.ApiError("Unauthoized", 401, []));
             }
             const accessToken = header.split(' ')[1];
-            console.log('accessToken ', accessToken);
             const decoded = (0, jsonwebtoken_1.verify)(accessToken, process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY');
             const userId = decoded.userId;
             const roles = decoded.roles;
