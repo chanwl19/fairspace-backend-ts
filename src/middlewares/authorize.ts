@@ -15,12 +15,13 @@ interface TokenInterface {
 
 export async function isAuthorized(req: Request, res : Response, next : NextFunction):Promise<void> {
     try {
-        // const header = req.headers?.authorization;
-        // if (!header) {
-        //     return next(new ApiError("Unauthoized", 401, []));
-        // }
-        // const accessToken = header.split(' ')[1];
-        const accessToken = req.body.token;
+        const header = req.headers?.authorization;
+        if (!header) {
+            return next(new ApiError("Unauthoized", 401, []));
+        }
+        const accessToken = header.split(' ')[1];
+        console.log('accessToken ', accessToken)
+        //const accessToken = req.body.token;
         const decoded = verify(
             accessToken,
             process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY'
