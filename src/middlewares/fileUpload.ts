@@ -53,23 +53,18 @@ export const fileHandler = multer({
 export async function uploadImage(file: Express.Multer.File) {
   let blob;
   if (file) {
-    console.log("file upload at ", new Date().toLocaleString())
     try {
-      console.log("Finish biuffer at ", new Date().toLocaleString())
       const extArray = file.mimetype.split("/");
       const extension = extArray[extArray.length - 1];
       const fileName = uuidv4() + '.' + extension;
       blob = await put("profile/" + fileName, file.buffer, {
         access: 'public',
       });
-      console.log("Finsih upload at ", new Date().toLocaleString())
       return blob;
     } catch (err) {
-      console.log('error ', err , ' at ' , new Date().toLocaleString());
+      console.log('err ' , err)
     }
-    console.log("file streamed")
 
-    console.log("blob ", blob)
   }
   return blob;
 }

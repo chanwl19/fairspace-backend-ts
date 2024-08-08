@@ -178,10 +178,10 @@ export async function updateUser(phoneNo: string, image: Express.Multer.File, id
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-        // if (image) {
-        //     const blob = await uploadImage(image);
-        //     user.image = blob?.downloadUrl;
-        // }
+        if (image) {
+            const blob = await uploadImage(image);
+            user.image = blob?.downloadUrl;
+        }
         if (phoneNo) {
             user.phoneNo = phoneNo;
         }

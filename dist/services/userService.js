@@ -17,6 +17,7 @@ const user_1 = require("../models/user");
 const role_1 = require("../models/role");
 const bcryptjs_1 = require("bcryptjs");
 const dotenv_1 = __importDefault(require("dotenv"));
+const fileUpload_1 = require("../middlewares/fileUpload");
 const mongoose_1 = __importDefault(require("mongoose"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 const axios_1 = __importDefault(require("axios"));
@@ -158,10 +159,10 @@ function updateUser(phoneNo, image, idKey, password, email, roleIds, firstName, 
                 return updateReturn;
             }
             ;
-            // if (image) {
-            //     const blob = await uploadImage(image);
-            //     user.image = blob?.downloadUrl;
-            // }
+            if (image) {
+                const blob = yield (0, fileUpload_1.uploadImage)(image);
+                user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
+            }
             if (phoneNo) {
                 user.phoneNo = phoneNo;
             }

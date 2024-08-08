@@ -60,23 +60,18 @@ function uploadImage(file) {
     return __awaiter(this, void 0, void 0, function* () {
         let blob;
         if (file) {
-            console.log("file upload at ", new Date().toLocaleString());
             try {
-                console.log("Finish biuffer at ", new Date().toLocaleString());
                 const extArray = file.mimetype.split("/");
                 const extension = extArray[extArray.length - 1];
                 const fileName = (0, uuid_1.v4)() + '.' + extension;
                 blob = yield (0, blob_1.put)("profile/" + fileName, file.buffer, {
                     access: 'public',
                 });
-                console.log("Finsih upload at ", new Date().toLocaleString());
                 return blob;
             }
             catch (err) {
-                console.log('error ', err, ' at ', new Date().toLocaleString());
+                console.log('err ', err);
             }
-            console.log("file streamed");
-            console.log("blob ", blob);
         }
         return blob;
     });
