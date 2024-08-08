@@ -16,7 +16,6 @@ exports.uploadImage = exports.fileHandler = exports.maxDuration = void 0;
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const dotenv_1 = __importDefault(require("dotenv"));
-//import { Storage } from '@google-cloud/storage';
 const blob_1 = require("@vercel/blob");
 dotenv_1.default.config();
 exports.maxDuration = 30;

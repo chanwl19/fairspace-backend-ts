@@ -2,8 +2,6 @@ import multer, { FileFilterCallback } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from "express";
 import dotenv from 'dotenv';
-import getGCPCredentials from '../middlewares/gcpCredentials';
-//import { Storage } from '@google-cloud/storage';
 import { put } from '@vercel/blob';
 
 dotenv.config();

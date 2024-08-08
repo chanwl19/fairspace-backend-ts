@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,6 +38,7 @@ const facilityRoute_1 = __importDefault(require("./routes/facilityRoute"));
 const reservationRoute_1 = __importDefault(require("./routes/reservationRoute"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const helmet_1 = __importDefault(require("helmet"));
+const authMiddleware = __importStar(require("./middlewares/authorize"));
 dotenv_1.default.config();
 const allowedOrigins = process.env.ALLOW_ORIGINS || ["https://fairspace.netlify.app"];
 const env = process.env.ENV || 'dev';
@@ -50,13 +74,13 @@ app.use('/auth', authRoute_1.default);
 app.use('/refresh', refreshRoute_1.default);
 //Route user to userRoute
 //app.use('/user', authMiddleware.isAuthorized, userRoute);
-app.use('/user', userRoute_1.default);
+app.use('/user', authMiddleware.isAuthorized, userRoute_1.default);
 //Route role to roleRoute
-app.use('/role', roleRoute_1.default);
+app.use('/role', authMiddleware.isAuthorized, roleRoute_1.default);
 //Route role to facilityRoute
-app.use('/facility', facilityRoute_1.default);
+app.use('/facility', authMiddleware.isAuthorized, facilityRoute_1.default);
 //Route role to reservationRoute
-app.use('/reservation', reservationRoute_1.default);
+app.use('/reservation', authMiddleware.isAuthorized, reservationRoute_1.default);
 //Catch error
 app.use((error, req, res, next) => {
     const status = error.statusCode || 500;

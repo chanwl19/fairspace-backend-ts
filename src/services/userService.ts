@@ -1,10 +1,8 @@
 import { User } from '../models/user';
 import { Role } from '../models/role';
 import { hash } from 'bcryptjs';
-import { encrypt } from '../middlewares/encryptText';
 import dotenv from 'dotenv';
 import { uploadImage } from '../middlewares/fileUpload';
-import sendEmail from '../middlewares/sendEmail';
 import mongoose from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
 import axios from 'axios';
