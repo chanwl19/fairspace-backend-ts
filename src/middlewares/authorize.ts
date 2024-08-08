@@ -47,7 +47,10 @@ function checkAllowAccess(roles: InstanceType<typeof Role>[], endPoint: string, 
     if (roles.length === 0) {
         return false;
     }
+    console.log('roles ', roles)
+    console.log('endPoint ', endPoint, ' method ', method.toUpperCase());
     const allowAccess = roles.filter(role => role.endPoints.includes(endPoint+','+method.toUpperCase()));
+    console.log('allowAccess ', allowAccess)
     if (allowAccess && allowAccess.length > 0) {
         
         return true;
