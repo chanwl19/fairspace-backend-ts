@@ -172,37 +172,28 @@ export async function updateUser(image: Express.Multer.File, idKey: string, pass
     sess.startTransaction();
 
     try {
-        console.log("idKey " , idKey , " email ", email, " roleIds ", roleIds, " password ", password, " firstName " , firstName, " middleName " , middleName, " lastName ", lastName)
+        console.log("idKey ", idKey, " email ", email, " roleIds ", roleIds, " password ", password, " firstName ", firstName, " middleName ", middleName, " lastName ", lastName)
         const user = await User.findById(idKey);
         if (!user) {
             updateReturn.errorCode = 404;
             updateReturn.errorMessage = 'User not found';
             return updateReturn;
         };
-        console.log('user ' , user);
-        if (image) {
-            const blob = await uploadImage(image);
-            user.image = blob?.downloadUrl;
-        }
-        if (email) {
-            user.email = email;
-        }
-        if (firstName) {
-            user.firstName = firstName;
-        }
-        if (middleName) {
-            user.middleName = middleName;
-        }
-        if (lastName) {
-            user.lastName = lastName;
-        }
+        console.log('user ', user);
+        const blob = await uploadImage(image);
+        user.image = blob?.downloadUrl;
+        user.email = email;
+        user.firstName = firstName;
+        user.middleName = middleName;
+        user.lastName = lastName;
+
         if (roleIds && roleIds?.length > 0) {
             const roles = await Role.find({ roleId: roleIds });
             if (roles && roles?.length > 0) {
                 user.roles = roles.map(role => role._id);
             }
         }
-        console.log('user after update ' , user);
+        console.log('user after update ', user);
         await user.save({ session: sess });
         await sess.commitTransaction();
         updateReturn.errorCode = 0;

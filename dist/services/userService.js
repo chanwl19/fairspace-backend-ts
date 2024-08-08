@@ -161,22 +161,12 @@ function updateUser(image, idKey, password, email, roleIds, firstName, middleNam
             }
             ;
             console.log('user ', user);
-            if (image) {
-                const blob = yield (0, fileUpload_1.uploadImage)(image);
-                user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
-            }
-            if (email) {
-                user.email = email;
-            }
-            if (firstName) {
-                user.firstName = firstName;
-            }
-            if (middleName) {
-                user.middleName = middleName;
-            }
-            if (lastName) {
-                user.lastName = lastName;
-            }
+            const blob = yield (0, fileUpload_1.uploadImage)(image);
+            user.image = blob === null || blob === void 0 ? void 0 : blob.downloadUrl;
+            user.email = email;
+            user.firstName = firstName;
+            user.middleName = middleName;
+            user.lastName = lastName;
             if (roleIds && (roleIds === null || roleIds === void 0 ? void 0 : roleIds.length) > 0) {
                 const roles = yield role_1.Role.find({ roleId: roleIds });
                 if (roles && (roles === null || roles === void 0 ? void 0 : roles.length) > 0) {
