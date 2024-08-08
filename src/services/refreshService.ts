@@ -82,7 +82,7 @@ export async function refreshToken(token: string): Promise<TokenReturn> {
         const accessToken = sign(
             { "userId": foundUser.userId, "roles": foundUser.roles },
             process.env.ACCESS_KEY || 'MY_SECRET_ACCESS_KEY',
-            { expiresIn: '1s' }
+            { expiresIn: '10s' }
         );
         console.log("generate new access token " , accessToken)
         const newRefreshToken = sign(
