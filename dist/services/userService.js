@@ -104,7 +104,7 @@ function getUserById(userId) {
             errorMessage: 'Error Occurs'
         };
         try {
-            const user = yield user_1.User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles').populate('reservations');
+            const user = yield user_1.User.findOne({ userId: userId }).select('-password -refreshToken -createdAt -updatedAt').populate('roles');
             if (!user) {
                 userReturn.errorCode = 404;
                 userReturn.errorMessage = 'User not found';

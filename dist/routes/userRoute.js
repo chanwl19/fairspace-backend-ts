@@ -35,4 +35,6 @@ userRoute.route('/')
     .delete(userController.deleteUser);
 userRoute.route('/resetPassword')
     .post(userController.changePassword);
+userRoute.route('/byId')
+    .get(userController.getUserById);
 exports.default = userRoute;

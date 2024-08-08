@@ -14,4 +14,7 @@ userRoute.route('/')
 userRoute.route('/resetPassword')
     .post(userController.changePassword);
 
+userRoute.route('/byId')
+    .get(userController.getUserById);
+
 export default userRoute;    

@@ -65,20 +65,19 @@ function signup(req, res, next) {
 exports.signup = signup;
 function getUserById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         try {
-            const userId = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.userId;
+            const userId = req.query.userId;
             if (!userId) {
                 return next(new apiError_1.ApiError("No user found", 404, []));
             }
             ;
-            const response = yield userService.getUserById(userId);
+            const response = yield userService.getUserById(userId.toString());
             if (response.errorCode !== 0) {
                 return next(new apiError_1.ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
             }
             res.status(200).json({ 'user': response.user });
         }
-        catch (_b) {
+        catch (_a) {
             return next(new apiError_1.ApiError("Error Occurs", 500, []));
         }
     });

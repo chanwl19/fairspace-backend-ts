@@ -35,11 +35,12 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
 
 export async function getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const userId = req.headers?.userId as string;
+        const userId = req.query.userId;
+
         if (!userId) {
             return next(new ApiError("No user found", 404, []));
         };
-        const response = await userService.getUserById(userId);
+        const response = await userService.getUserById(userId.toString());
 
         if (response.errorCode !== 0) {
             return next(new ApiError(response.errorMessage || "Error Occurs", response.errorCode || 500, []));
