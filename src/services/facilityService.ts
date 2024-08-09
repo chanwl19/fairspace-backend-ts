@@ -79,9 +79,9 @@ export async function updateFacility(_id: string, location: string, type: string
 
         let duplicateFacilities = [];
         if (type === 'R'){
-            duplicateFacilities = await Facility.find({status: 'A', type: type, location: location });
+            duplicateFacilities = await Facility.find({status: 'A', type: type, location: location, _id: { $ne: Object(_id) } });
         } else {
-            duplicateFacilities = await Facility.find({ status: 'A', type: type, location: location, seatNumber: seatNumber  });
+            duplicateFacilities = await Facility.find({ status: 'A', type: type, location: location, seatNumber: seatNumber, _id: { $ne: Object(_id) } });
         }
 
         if (duplicateFacilities && duplicateFacilities.length > 0) {

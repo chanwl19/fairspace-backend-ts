@@ -80,10 +80,10 @@ function updateFacility(_id, location, type, openTime, closeTime, capacity, seat
             }
             let duplicateFacilities = [];
             if (type === 'R') {
-                duplicateFacilities = yield facility_1.Facility.find({ status: 'A', type: type, location: location });
+                duplicateFacilities = yield facility_1.Facility.find({ status: 'A', type: type, location: location, _id: { $ne: Object(_id) } });
             }
             else {
-                duplicateFacilities = yield facility_1.Facility.find({ status: 'A', type: type, location: location, seatNumber: seatNumber });
+                duplicateFacilities = yield facility_1.Facility.find({ status: 'A', type: type, location: location, seatNumber: seatNumber, _id: { $ne: Object(_id) } });
             }
             if (duplicateFacilities && duplicateFacilities.length > 0) {
                 updateFacilityReturn.errorCode = 409;
