@@ -27,7 +27,7 @@ app.use(cors(
       if (env === 'dev') {
         callback(null, true);
       } else {
-        if (allowedOrigins.indexOf(origin || "") !== -1 || !origin) {
+        if (allowedOrigins.indexOf(origin || "notAllowed") !== -1) {
           callback(null, true)
         } else {
           callback(new Error('Not allowed by CORS'));
